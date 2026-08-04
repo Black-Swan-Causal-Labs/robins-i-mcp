@@ -73,7 +73,7 @@ is intention-to-treat.
 
 ```bash
 python3 -m venv .venv && .venv/bin/python -m pip install -e ".[dev]"
-.venv/bin/python -m pytest tests/ -q      # 181 passed
+.venv/bin/python -m pytest tests/ -q      # 202 passed
 .venv/bin/robins-mcp                      # stdio MCP server
 ```
 
@@ -89,6 +89,8 @@ python3 -m venv .venv && .venv/bin/python -m pip install -e ".[dev]"
 | Assess | `assess_result` | `domain=0` overview, `domain=1..6` scaffold |
 | | `submit_answers` | per domain; `domain=0` finalizes and renders |
 | Render | `render_report` | re-render of the stamped artifact |
+| Review | `render_review` | traffic-light figure across every result in a review |
+| | `export_robvis` | CSV for [robvis](https://mcguinlu.shinyapps.io/robvis/) |
 
 Scaffolds are **per domain**, never one flat rubric: most signalling questions
 are unreachable on any given path, and which of domain 1's two sets exists at
@@ -98,6 +100,25 @@ all depends on C4.
 the analysis detail domains 1 and 4 turn on, routinely live only in the
 appendix. Without it, those questions read `NI` when the answer was merely in a
 file nobody ingested.
+
+## Review-level output
+
+ROBINS-I assesses one result at a time, but is built for a *series* of them
+inside a review — P1 is agreed once and applied to every study. Assess each
+result under a shared `review_id`, then:
+
+- `render_review` draws a traffic-light figure across all of them. It says out
+  loud that rows are **results, not studies**, badges each row with its C4
+  variant (so the D1 column is not read as meaning one thing when the set is
+  mixed), and keeps *Low, except for concerns about uncontrolled confounding* as
+  its own level.
+- `export_robvis` writes a CSV for robvis. Read the returned `losses` first.
+  robvis's ROBINS-I template is **V1** — seven domains, and V1 orders selection
+  of participants *before* classification of interventions, which V2 swaps. The
+  default layout places each V2 judgement in its correct V1 slot rather than
+  dumping columns in order; a positional dump would parse, plot, and lie.
+  robvis also reduces every cell to its first initial over a five-fill palette,
+  so the qualified low collapses to Low there whatever string is written.
 
 ## Worked examples
 

@@ -49,12 +49,15 @@ robins-mcp/
 │   ├── report.py          Assessment assembly, evidence binding, provenance
 │   ├── render_html.py     self-contained BSCL-branded HTML report
 │   ├── scaffold.py        per-domain question/cue scaffolds for the model
-│   └── server.py          the MCP tool surface — 8 tools
+│   ├── review.py          review-level rows, summary, robvis export
+│   ├── render_review.py   traffic-light figure across results
+│   └── server.py          the MCP tool surface — 10 tools
 ├── examples/
 │   ├── dickerman_2022.py            library-level assessment (NEJM 2022)
 │   ├── jabagi_2026_server_run.py    server-level assessment (Lancet Reg Health Eur 2026)
+│   ├── review_batch.py              review-level: 3 results, figure + robvis export
 │   └── demo_report.py               synthetic, exercises all three flag paths
-├── tests/                 181 passing (137 library + 44 server)
+├── tests/                 202 passing (137 library + 43 server + 22 review)
 ├── pyproject.toml         installable; entry point `robins-mcp`
 └── docs/                  DECISIONS.md, STATUS.md
 ```
@@ -62,7 +65,7 @@ robins-mcp/
 Setup and run:
 ```
 python3 -m venv .venv && .venv/bin/python -m pip install -e ".[dev]"
-.venv/bin/python -m pytest tests/ -q          # 181 passed
+.venv/bin/python -m pytest tests/ -q          # 202 passed
 .venv/bin/python examples/jabagi_2026_server_run.py
 .venv/bin/robins-mcp                          # stdio MCP server
 ```
@@ -70,7 +73,7 @@ python3 -m venv .venv && .venv/bin/python -m pip install -e ".[dev]"
 > `mcp` is pinned `>=1.9,<2` — 2.0 replaced `FastMCP` with `MCPServer`. See
 > DECISIONS.md. Not yet registered in any client's MCP config.
 
-## The tool surface (8 tools)
+## The tool surface (10 tools)
 
 | Group | Tool | Notes |
 |---|---|---|
@@ -82,6 +85,8 @@ python3 -m venv .venv && .venv/bin/python -m pip install -e ".[dev]"
 | Assess | `assess_result` | `domain=0` overview, `domain=1..6` scaffold |
 | | `submit_answers` | per domain; `domain=0` finalizes and renders |
 | Render | `render_report` | re-render of the stamped artifact |
+| Review | `render_review` | traffic-light figure across every result in a review |
+| | `export_robvis` | CSV for robvis; read its `losses` before publishing |
 
 Three things are enforced at `submit_answers` and are the point of the layer:
 quotes resolve to offsets in the ingested bundle or are rejected with the nearest
@@ -161,6 +166,27 @@ Outcome: **serious**, on domain 1. All 26 quotes bound on the exact pass. 13 of
 The run also found a real bug — an agent-proposed P1 was not entering the
 ratification queue. Fixed; see DECISIONS.md 2026-08-03.
 
+## Review-level output (added 2026-08-03)
+
+A review is a *series* of assessments — one per result, sharing a `review_id`
+and therefore a P1. That already worked; what was missing was any view across
+it. `review.py` and `render_review.py` add one.
+
+`render_review` states three things a naive traffic-light plot hides, because
+each of them would otherwise overstate the evidence:
+- **rows are results, not studies** — the figure prints "N rows from M
+  document(s)" so a paper contributing three outcomes cannot read as three
+  studies' worth of independent evidence;
+- **the D1 column does not mean one thing** when a set mixes C4 variants, so
+  every row is badged A or B and a caveat appears only when the set is mixed;
+- **it keeps `low_except_confounding` as its own level**, which robvis cannot.
+
+`export_robvis` is the interop path, and it is not a column dump — see
+DECISIONS.md 2026-08-03. It defaults to `layout="robins_i"`, which places V2's
+judgements into V1's seven slots (V1 orders selection before classification;
+V2 swaps them) and marks the dropped deviations domain NA. Always read the
+returned `losses`.
+
 ## NEXT
 
 - **Register the server** in a client config and drive it over stdio. Everything
@@ -172,16 +198,6 @@ ratification queue. Fixed; see DECISIONS.md 2026-08-03.
 - **`render_report_docx`** — deliberately not built. The target-mcp docx renderer
   is shaped around a checklist table and does not transfer to a
   domain/judgement/support document; this needs its own renderer, not a port.
-- **robvis export** — small, high value, and the natural first piece of
-  review-level output. [robvis](https://mcguinlu.shinyapps.io/robvis/) is how
-  these assessments become Cochrane-style traffic-light and summary figures.
-  One function: a row per assessed result, a column per domain, plus Overall and
-  Weight. **It must target `tool = "Generic"`, never `tool = "ROBINS-I"`** —
-  that template is V1, which has seven domains AND transposes D2/D3 relative to
-  V2, so a positional dump silently mislabels two domains without erroring. See
-  DECISIONS.md 2026-08-03 for the full mapping and for the one thing to ask
-  about before building: how to render `low_except_confounding` in a palette
-  that has no slot for it.
 - **Corpus tools** (`aggregate_corpus`, `build_coding_sheet`,
   `validate_against_gold`) — also deliberately not built. They are written
   against TARGET's leaf/verdict data model, not a domain/judgement one, so these

@@ -37,14 +37,34 @@ template is **V1** and V2 is NOT drop-in compatible. Read from robvis source
   thing V2 insists on about domain 1 — that it can never reach plain low. And
   robvis's `n` ("No information") is a V1 domain-level verdict; in V2, NI is a
   signalling-question answer and no domain judgement can be NI.
-- **Therefore:** any export targets `tool = "Generic"`, which takes arbitrary
-  domain columns, uses the header row as labels, and accepts custom
-  `judgement_labels`. Never emit a file claiming to be a ROBINS-I robvis dataset.
-- **Open question for the export, not to be silently decided:** how to render
-  `low_except_confounding` in a five-colour palette. Options are a sixth colour
-  (honest, non-standard), collapse to low with a footnote (standard, lossy), or
-  refuse to plot domain 1 alongside the others. Ask before choosing.
-- Status: recorded, not built. See STATUS.md NEXT.
+- **First conclusion, WRONG, corrected below:** "therefore target
+  `tool = 'Generic'`". Reading robvis's `rob_summary_generic` shows Generic is
+  really its ROB1 path (`check_rob1(tool)`), and its preprocessing is
+  `substr(x,0,2); gsub("se","h"); substr(x,0,1); gsub("m","s")` — which renames
+  Moderate to "Some concerns" and Serious to "High". Correct columns, wrong
+  vocabulary.
+- **What we built instead** (`review.py`, `layout="robins_i"`, the default):
+  emit V1's SEVEN-column template with each V2 judgement placed in its correct
+  V1 slot and the deviations slot written `NA`, which robvis's `clean_data`
+  maps to "x" and draws as N/A. Upload with `tool = "ROBINS-I"`. This keeps
+  ROBINS-I's own judgement vocabulary AND fixes the transposition, because we
+  do the slotting rather than trusting column order. `layout="generic"` remains
+  available for when V2's own headings matter more than the vocabulary.
+- **A hard limit neither layout escapes.** robvis's `clean_data` reduces every
+  cell to its first initial and the fill scale defines only l/m/s/c/n/x. "Low"
+  and "Low except for concerns about uncontrolled confounding" both collapse to
+  "l", so the qualified level cannot be carried into robvis by ANY cell string.
+  `robvis_table` therefore returns a `losses` list — the qualified level, mixed
+  C4 variants, and equal weighting — rather than quietly degrading. Note the
+  overall judgement is qualified whenever every domain is at its lowest level,
+  so this loss fires more often than the domain cells suggest.
+- **Where the sixth level lives instead:** `render_review.py`, our own
+  review-level figure, draws it as a distinct level. That was the user's call
+  when asked; it is the right one, because the whole point of that level is
+  that it is not plain low.
+- Status: built. `review.py`, `render_review.py`, tools `export_robvis` and
+  `render_review`, 22 tests. The load-bearing one is
+  `test_robins_i_layout_transposes_d2_and_d3` — every other export bug is loud.
 
 ## 2026-08-03 · Scope is follow-up cohort studies; read the property, not the label
 `guideline_scope` states the structural property and names the one case where
