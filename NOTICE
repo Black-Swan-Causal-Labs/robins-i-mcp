@@ -1,0 +1,54 @@
+ROBINS-I MCP Server
+Copyright 2026 Black Swan Causal Labs
+
+Licensed under the Apache License, Version 2.0 (the "License"); see the LICENSE
+file. You may not use this software except in compliance with the License.
+
+--------------------------------------------------------------------------------
+Third-party / upstream attribution
+--------------------------------------------------------------------------------
+
+This software implements the ROBINS-I V2 risk-of-bias framework:
+
+    Sterne JAC, Mathur MB, Elbers R, Hróbjartsson A, McAleenan A, Reeves B,
+    Shrier I, Tilling K, et al. The Risk Of Bias In Non-randomized Studies –
+    of Interventions, Version 2 (ROBINS-I V2) assessment tool (for follow-up
+    studies), 20 November 2025. https://www.riskofbias.info/
+
+The published tool is licensed CC BY-NC-ND 4.0. That licence is stricter than
+TARGET's CC BY-ND, and it is the reason this repository is built the way it is:
+
+  * NO published wording is reproduced anywhere in this repository. The encoded
+    specification (robins_mcp/specs/*.yaml) re-expresses the INTENT of each
+    signalling question in original wording. There is deliberately no verbatim
+    OFFICIAL_TEXT mapping of the kind the sibling TARGET server ships, and no
+    projection onto a published form.
+
+  * The interoperability layer is the published question IDENTIFIERS (1.1, 3.4,
+    C4 and so on), response-option letters, and domain names. These are
+    functional identifiers, not expression.
+
+  * The judgement algorithms in robins_mcp/algorithms.py are decision logic —
+    methods and procedures, not copyrightable expression. They were traced by
+    hand from the raster flowcharts in the source document; see
+    TRANSCRIPTION-NOTES.md for how, and for what remains unverified.
+
+Because no CC BY-NC-ND material is redistributed here, the NonCommercial clause
+does not attach to this software, and the Apache-2.0 grant above stands on its
+own. See docs/DECISIONS.md (2026-07-29) for the full reasoning.
+
+Trademark, not copyright, is the live constraint. Nominative use ("assessed
+using the ROBINS-I V2 framework") is fine. Do not use ROBINS-I or Cochrane
+logos, do not describe output as "official" or "certified", and do not imitate
+the layout of riskofbias.info's own output. Every report this software produces
+carries a non-endorsement statement to that effect (robins_mcp/report.py).
+
+--------------------------------------------------------------------------------
+Status of the source
+--------------------------------------------------------------------------------
+
+The 20 November 2025 release of ROBINS-I V2 is a DRAFT and is subject to change;
+a November 2024 release is archived alongside it. Assessments produced by this
+software are provisional against a moving source, and every report stamps that
+fact in its provenance line. The algorithm fingerprint in that stamp covers this
+implementation's transcription, NOT the upstream document.

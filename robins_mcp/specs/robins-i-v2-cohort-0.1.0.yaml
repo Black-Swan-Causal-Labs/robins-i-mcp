@@ -1,0 +1,808 @@
+# ROBINS-I V2 (follow-up / cohort studies) — operationalized specification
+#
+# Re-encoding of the INTENT of each signalling question in original words, for
+# machine-assisted risk-of-bias assessment. This file does NOT reproduce the
+# published signalling-question wording and is not a substitute for the tool.
+#
+# Source guideline (attribution):
+#   Sterne JAC, Mathur MB, Elbers R, Hróbjartsson A, McAleenan A, Reeves B,
+#   Shrier I, Tilling K, et al. The Risk Of Bias In Non-randomized Studies –
+#   of Interventions, Version 2 (ROBINS-I V2) assessment tool (for follow-up
+#   studies), 20 November 2025. https://www.riskofbias.info/
+#
+#   THE SOURCE IS A DRAFT. riskofbias.info describes the 20 November 2025
+#   release as still a draft and subject to change; a November 2024 release is
+#   archived alongside it. Everything encoded here therefore tracks a moving
+#   target. The algorithm fingerprint detects a correction to OUR transcription,
+#   not a revision to THEIR document — see source_status below.
+#
+#   The published tool is licensed CC BY-NC-ND 4.0. NC + ND together mean:
+#   (a) verbatim signalling-question wording must NOT be modified, and
+#   (b) it must NOT be redistributed as part of anything with a commercial
+#       purpose. Consequently this spec carries own-words intent ONLY, and
+#       there is deliberately no OFFICIAL_TEXT verbatim projection of the kind
+#       the TARGET server ships. See TRANSCRIPTION-NOTES.md.
+#
+# The judgement algorithms encoded in algorithms.py are decision logic, not
+# prose, and are transcribed from the flowchart figures on pp. 20, 24, 28, 32,
+# 38, 41, 47 and the table on p. 49.
+
+spec_version: "robins-i-v2-cohort-0.1.0"
+tool_version: "ROBINS-I V2, 20 November 2025"
+variant_scope: follow_up_cohort
+
+source_status: draft
+source_status_note: >
+  The published tool this encodes is a DRAFT. As of 2026-08-03 riskofbias.info
+  presents the 20 November 2025 release as still a draft, subject to change,
+  with a November 2024 release archived beside it. Two consequences. First,
+  every assessment produced here is provisional against a source that may be
+  revised, and the algorithm fingerprint in the provenance stamp does not
+  detect that — it hashes our transcription, so an upstream revision we have
+  not ingested is invisible to it. Second, a diff of the Nov 2024 against the
+  Nov 2025 release would show which parts of the tool are still moving, and is
+  the cheapest available check on where transcription risk is concentrated.
+  Re-check riskofbias.info for a newer release before relying on any assessment.
+
+variant_scope_note: >
+  ROBINS-I V2 is published only in this form. There is no case-control,
+  cross-sectional or other design variant of the tool: riskofbias.info lists
+  the Nov 2025 draft and the archived Nov 2024 release, both the follow-up
+  (cohort) document. Note that "Variant A / Variant B" inside the tool refers
+  to the two forms of DOMAIN 1 selected by C4, not to study designs. The V2
+  architecture presumes a time zero, follow-up time and possible time-varying
+  confounding — it dropped V1's "deviations from intended intervention" domain
+  and folded protocol deviations into domain 1 variant B — so it does not
+  transfer to designs without follow-up.
+
+guideline_scope: >
+  Cohort-style non-randomized studies in which one treatment policy is
+  contrasted against another and participants are sorted into groups on the
+  basis of what they were prescribed or took, since nothing was allocated at
+  random. Other ROBINS-I variants (e.g. for other study designs) are outside
+  the encoded scope; do not apply this spec to them.
+
+# ---------------------------------------------------------------------------
+# What makes this instrument structurally different from a reporting checklist
+# ---------------------------------------------------------------------------
+assessment_unit: study_result
+assessment_unit_note: >
+  The unit of assessment is ONE numerical result (one effect estimate), not one
+  manuscript. A paper reporting three outcomes across two analyses yields six
+  independent assessments. Every assessment object is keyed by result_id, and
+  preliminaries A–D are re-specified per result.
+
+judgement_source: algorithm
+judgement_source_note: >
+  Signalling questions are answered from evidence; the domain-level and overall
+  judgements are COMPUTED by algorithm (algorithms.py), never asserted by the
+  assessor. Algorithm output may be overridden, but an override requires a
+  recorded justification (see override_policy).
+
+# ---------------------------------------------------------------------------
+# Response vocabularies
+# ---------------------------------------------------------------------------
+response_vocabularies:
+  standard: [Y, PY, PN, N, NI]
+  standard_na: [NA, Y, PY, PN, N, NI]
+  weak_strong_no: [Y, PY, WN, SN, NI]            # 1.1A, 3.1
+  weak_strong_no_na: [NA, Y, PY, WN, SN, NI]     # 1.2, 1.3B, 4.6, 4.9, 4.10
+  weak_strong_yes: [SY, WY, PN, N, NI]           # 2.4
+  weak_strong_yes_na: [NA, SY, WY, PN, N, NI]    # 2.3, 5.3
+  no_ni: [Y, PY, PN, N]                          # 1.4A, 1.5B
+  no_ni_na: [NA, Y, PY, PN, N]                   # 4.11
+
+response_semantics:
+  Y:  "yes"
+  PY: "probably yes — same bias implication as Y"
+  PN: "probably no — same bias implication as N"
+  N:  "no"
+  NI: "no information on which to answer"
+  WN: "no, but the resulting bias is probably not substantial"
+  SN: "no, and the resulting bias is probably substantial"
+  WY: "yes, but the impact is probably not substantial"
+  SY: "yes, and the impact is probably substantial"
+  NA: "question not reached on this path"
+
+judgements:
+  - low                      # in domain 1 rendered as low_except_confounding
+  - low_except_confounding
+  - moderate
+  - serious
+  - critical
+
+# ---------------------------------------------------------------------------
+# Evidence policy — deliberately looser than TARGET's
+# ---------------------------------------------------------------------------
+evidence_policy: >
+  Three evidence modes, because ROBINS-I answers are not all closed-book.
+    manuscript_positive — the answer asserts the study DID something. Requires
+      >=1 verbatim quote resolvable to a span in the source bundle.
+    manuscript_absent   — the answer rests on absence (typically NI, and often
+      N/PN). Requires a recorded search_record: the sections searched and the
+      terms used. A quote is not possible and must not be fabricated.
+    reviewer_prior      — the answer is judged against reviewer-supplied
+      context, not the manuscript (see confounding_domain). Requires a
+      reference to the specific prespecified item invoked. These answers MUST
+      be flagged for human ratification before the assessment is finalized.
+  Every answer carries exactly one evidence_mode.
+
+# ---------------------------------------------------------------------------
+# Preliminaries — established ONCE per result, before any domain is scored.
+# In a multi-assessor (or multi-agent) workflow these must be agreed and frozen
+# first; the tool itself requires this of independent human assessors.
+# ---------------------------------------------------------------------------
+preliminaries:
+  - id: "P1"
+    stage: planning
+    scope: review          # NOT per-result; set once for the whole review
+    evidence_mode: reviewer_prior
+    label: "Prespecified important confounding factors"
+    intent: >
+      Before any study is assessed, the reviewer lists the confounding factors
+      judged important for the intervention–outcome relationship under review,
+      noting any that are specific to particular intervention–outcome pairs.
+      Important means adjustment would be expected to change the estimated
+      effect meaningfully; factors with only very weak associations are
+      excluded.
+    required: true
+    blocking: true
+    blocking_note: >
+      Domain 1 is UNANSWERABLE without this list. 1.1 asks whether ALL important
+      confounding factors were controlled for — "important" is defined by P1,
+      not by the manuscript. If P1 is absent the server must refuse to score
+      domain 1 rather than silently substituting the paper's own covariate list.
+      A candidate list may be proposed (e.g. from a DAG) but must be ratified by
+      a human before it becomes P1.
+
+  - id: "A1"
+    label: "The numerical result being assessed"
+    evidence_mode: manuscript_positive
+    intent: >
+      The specific effect estimate under assessment, with its precision, stated
+      unambiguously (e.g. a ratio measure with its interval).
+    required: true
+  - id: "A2"
+    label: "Further detail on the result"
+    evidence_mode: manuscript_positive
+    intent: >
+      Where the result appears in the report (table, figure, paragraph) and why
+      this result was selected for assessment.
+    required: false
+  - id: "A3"
+    label: "The outcome to which the result relates"
+    evidence_mode: manuscript_positive
+    required: true
+
+  - id: "B1"
+    label: "Any attempt to control confounding in this result"
+    response_options: [Y, PY, PN, N]
+    evidence_mode: manuscript_positive
+    intent: >
+      Whether the authors made any attempt at all to control for confounding in
+      the specific result being assessed.
+  - id: "B2"
+    label: "Unadjusted result not worth considering further"
+    asked_if: "B1 in {PN, N}"
+    response_options: [Y, PY, PN, N]
+    evidence_mode: reviewer_prior
+    intent: >
+      Whether the potential for confounding is great enough that an unadjusted
+      result should not be considered further.
+    terminates_assessment_if: "Y, PY -> critical"
+  - id: "B3"
+    label: "Outcome measurement method inappropriate"
+    response_options: [Y, PY, PN, N]
+    evidence_mode: manuscript_positive
+    intent: >
+      Whether the method used to measure or collect the outcome is unsuitable
+      for the outcome it is meant to capture — because the relevant range of
+      values is undetectable by the method, because reliability or validity is
+      demonstrably too poor for the estimate to be useful, or because the
+      method differed so much between the groups that a between-group
+      difference is uninterpretable. This is not a judgement about whether the
+      outcome itself was a sensible choice.
+    terminates_assessment_if: "Y, PY -> critical"
+  - id: "B_gate"
+    kind: gate
+    rule: "if B2 in {Y,PY} or B3 in {Y,PY}: overall = critical; skip all domains"
+
+  - id: "C1"
+    label: "Target trial: eligible participants"
+    evidence_mode: manuscript_positive
+    intent: >
+      The eligibility criteria of the hypothetical target trial, deduced from
+      the study population actually analysed. Ethics and feasibility are
+      irrelevant because the trial is hypothetical.
+    required: true
+  - id: "C2"
+    label: "Target trial: intervention strategy"
+    evidence_mode: manuscript_positive
+    required: true
+  - id: "C3"
+    label: "Target trial: comparator strategy"
+    evidence_mode: manuscript_positive
+    required: true
+    intent: >
+      For analyses estimating a per-protocol effect, C2 and C3 must state the
+      strategies whose effects the analysis actually contrasts, including which
+      post-baseline intervention changes count as protocol deviations.
+  - id: "C4"
+    label: "Analysis accounts for protocol deviations / treatment switching"
+    response_options: [no_itt, yes_pp]
+    evidence_mode: manuscript_positive
+    required: true
+    intent: >
+      Whether the analysis accounted for switches between the compared
+      strategies, or other protocol deviations, during follow-up. No means the
+      analysis targets the effect of assignment (intention-to-treat); yes means
+      it targets the effect of sustained receipt (per-protocol).
+    selects_variant:
+      no_itt: "domain1_variant_a"
+      yes_pp: "domain1_variant_b"
+    note: >
+      This is the single highest-leverage preliminary: it swaps the entire
+      Domain 1 question set and algorithm. Resolve it before fan-out.
+
+  - id: "D1"
+    label: "Information sources obtained"
+    kind: multi_select
+    options:
+      - journal_article
+      - study_protocol
+      - statistical_analysis_plan
+      - noncommercial_registry_record
+      - company_registry_record
+      - grey_literature
+      - conference_abstract
+      - regulatory_document
+      - individual_participant_data
+      - research_ethics_application
+      - grant_database_summary
+      - personal_communication_investigator
+      - personal_communication_sponsor
+      - other
+    intent: >
+      Which sources were obtained to inform the judgements. Assessment should
+      draw on the maximum available information, not the article alone.
+    note: >
+      Drives the ingestion bundle. An NI answer is only defensible relative to
+      what was actually searched — the sources recorded here define that scope.
+
+# ---------------------------------------------------------------------------
+# Confounding-factor evaluation table — built after preliminaries, before
+# domain 1. This is the shared state every domain-1 answer depends on.
+# ---------------------------------------------------------------------------
+confounding_domain:
+  built_from: ["P1 (prespecified list)", "factors specific to this study or named by its authors"]
+  row_schema:
+    confounding_factor: str
+    measured_variables: "list[str] | none"
+    controlled_in_analysis: [Y, N]
+    measured_validly_and_reliably: [NA, Y, PY, PN, N, NI]   # asked if controlled
+    control_demonstrably_unnecessary: [NA, Y, PY, PN, N]    # asked if not controlled
+    expected_direction_if_unadjusted: [upward, downward, unpredictable]  # optional
+    comments: str
+  unnecessary_control_grounds:
+    - not associated with the outcome conditional on intervention
+    - not associated with the intervention
+    - adjustment makes no or minimal difference to the estimate
+    - handled by design (e.g. restriction)
+    - a negative control indicates confounding by this factor is unlikely or minimal
+    - external evidence indicates control is unnecessary in this context
+  note: >
+    Two subtables in the tool: (i) factors prespecified in P1, (ii) additional
+    factors relevant to this study's setting or identified by its authors.
+    Subtable (i) rows are evidence_mode=reviewer_prior; subtable (ii) rows may
+    be manuscript-derived but still require ratification.
+
+# ---------------------------------------------------------------------------
+# Signalling questions
+# ---------------------------------------------------------------------------
+domains:
+
+  - domain: 1
+    label: "Bias due to confounding"
+    algorithm: "domain1_variant_a | domain1_variant_b (selected by C4)"
+    low_label: low_except_confounding
+    low_label_note: >
+      Domain 1 can never reach plain "low": uncontrolled confounding cannot be
+      excluded in an observational study, so the best attainable judgement is
+      "low risk of bias except for concerns about uncontrolled confounding".
+    depends_on: [P1, confounding_domain, C4]
+
+    variants:
+      - variant: A
+        applies_if: "C4 == no_itt"
+        label: "Intention-to-treat effect — baseline confounding only"
+        questions:
+          - id: "1.1"
+            response_options: weak_strong_no
+            evidence_mode: reviewer_prior
+            label: "All important confounding factors controlled for"
+            intent: >
+              Whether every confounding factor that the preliminary evaluation
+              deemed important, and for which control was necessary, was in fact
+              controlled by an appropriate method — stratification, regression,
+              matching, standardization, inverse probability weighting, or
+              adjustment for an estimated propensity score.
+            assessor_notes: >
+              Y/PY: all necessary factors controlled appropriately; also Y/PY in
+              the rare case where there are no confounding factors and an
+              unadjusted estimate is presented. WN: most were controlled and the
+              residual confounding is unlikely to be substantial (e.g. omitted
+              factors correlate strongly with controlled ones). SN: at least one
+              important factor that should have been controlled was not, and the
+              omission is likely to matter materially.
+          - id: "1.2"
+            asked_if: "1.1 in {Y, PY, WN}"
+            response_options: weak_strong_no_na
+            evidence_mode: manuscript_positive
+            label: "Controlled factors measured validly and reliably"
+            intent: >
+              Whether the variables used to adjust are valid and reliable
+              measures of the confounding factors they stand for. Validity is
+              whether the variable captures the factor; reliability is the
+              precision with which it does so.
+            assessor_notes: >
+              Where authors adjust with no indication of a measure's validity or
+              reliability, weigh how subjective the measure is. Y/PY in the rare
+              no-confounding, unadjusted-analysis case.
+          - id: "1.3"
+            asked_if: "1.1 in {Y, PY, WN}"
+            response_options: standard_na
+            evidence_mode: manuscript_positive
+            label: "Post-intervention variables controlled for"
+            intent: >
+              Whether the analysis adjusted for any variable measured after the
+              intervention began that could itself have been affected by the
+              intervention — over-adjustment. Adjusting for a mediator estimates
+              a direct effect rather than the total effect; adjusting for a
+              common effect of intervention and outcome (a collider) introduces
+              bias.
+            polarity: yes_is_bad
+          - id: "1.4"
+            response_options: no_ni
+            evidence_mode: manuscript_positive
+            label: "Negative controls or bias analysis suggest serious uncontrolled confounding"
+            intent: >
+              Whether negative controls, quantitative bias analysis, or other
+              considerations positively indicate that the result suffers
+              material confounding. A study that used none of these, with
+              nothing else pointing that way, answers N.
+            polarity: yes_is_bad
+
+      - variant: B
+        applies_if: "C4 == yes_pp"
+        label: "Per-protocol effect — baseline and time-varying confounding"
+        questions:
+          - id: "1.1"
+            response_options: standard
+            evidence_mode: manuscript_positive
+            label: "Analysis method appropriate for time-varying confounding"
+            intent: >
+              Whether the analysis used a method capable of handling
+              time-varying confounding — a g-method that avoids conditioning on
+              time-varying confounders, such as inverse probability of censoring
+              weighting fitted to baseline and time-varying factors. Including
+              time-varying confounders as covariates in a standard regression is
+              not such a method.
+          - id: "1.2"
+            asked_if: "1.1 in {Y, PY}"
+            response_options: weak_strong_no_na
+            evidence_mode: reviewer_prior
+            label: "All important confounding factors controlled for"
+            intent: >
+              As variant A 1.1, but the set of important factors now includes
+              the time-varying factors that predict post-baseline protocol
+              deviations, not only baseline factors.
+          - id: "1.3"
+            asked_if: "1.2 in {Y, PY, WN}"
+            response_options: weak_strong_no_na
+            evidence_mode: manuscript_positive
+            label: "Controlled factors measured validly and reliably"
+            intent: "As variant A 1.2, covering time-varying factors as well."
+          - id: "1.4"
+            asked_if: "1.1 in {PN, N, NI}"
+            response_options: standard_na
+            evidence_mode: manuscript_positive
+            label: "Post-baseline variables controlled for"
+            intent: >
+              Whether the analysis adjusted for variables measured after the
+              intervention started. On this branch the analysis already lacks an
+              appropriate time-varying method, so such adjustment compounds the
+              problem.
+            polarity: yes_is_bad
+          - id: "1.5"
+            response_options: no_ni
+            evidence_mode: manuscript_positive
+            label: "Negative controls or other considerations suggest serious uncontrolled confounding"
+            intent: "As variant A 1.4."
+            polarity: yes_is_bad
+
+  - domain: 2
+    label: "Bias in classification of interventions"
+    algorithm: domain2
+    questions:
+      - id: "2.1"
+        response_options: standard
+        evidence_mode: manuscript_positive
+        label: "Strategies distinguishable at start of follow-up"
+        intent: >
+          Whether the intervention and comparator strategies could be told apart
+          at the moment follow-up began, so that each participant's group
+          membership is determined by baseline information alone.
+      - id: "2.2"
+        asked_if: "2.1 in {PN, N, NI}"
+        response_options: standard_na
+        evidence_mode: manuscript_positive
+        label: "Almost all outcome events occurred after strategies became distinguishable"
+        intent: >
+          Whether nearly all outcome events fell after the point at which the
+          strategies could be distinguished, so that the ambiguous early window
+          contributes little.
+      - id: "2.3"
+        asked_if: "2.2 in {PN, N, NI}"
+        response_options: weak_strong_yes_na
+        evidence_mode: manuscript_positive
+        label: "Analysis avoided the indistinguishability problem"
+        intent: >
+          Whether the analysis used a method that handles strategies which are
+          not distinguishable at baseline — clone-censor-weight, the g-formula,
+          or a landmark design that starts follow-up once the strategies are
+          separable.
+        assessor_notes: >
+          SY where the factors driving later treatment choices were captured in
+          the data and fed correctly into the weighting, or where a landmark
+          design was used. WY where one of these methods was applied but full
+          adjustment for those later drivers is doubtful. Note a landmark
+          design imports selection bias, judged in domain 3, not here.
+      - id: "2.4"
+        response_options: weak_strong_yes
+        evidence_mode: manuscript_positive
+        label: "Classification influenced by knowledge of the outcome"
+        intent: >
+          Whether intervention status was assigned using information that the
+          outcome, or the risk of it, could have influenced — differential
+          misclassification. Classification built entirely from records made at
+          or before the start of follow-up makes this unlikely; recall of past
+          treatment, or records whose availability depends on the outcome,
+          make it likely.
+        assessor_notes: "SY when the impact of that knowledge was likely substantial; WY when not."
+        polarity: yes_is_bad
+      - id: "2.5"
+        response_options: standard
+        evidence_mode: manuscript_positive
+        label: "Further (non-differential) classification errors likely"
+        intent: >
+          Whether misclassification unrelated to the outcome was likely — for
+          example, treatment receipt not captured by the data source used to
+          classify it. Ambiguous intervention definitions (type, setting, dose,
+          frequency, intensity, timing left unclear) point toward yes. Such
+          errors usually bias toward the null.
+        assessor_notes: >
+          "Nearly all correctly classified" means enough to be confident of the
+          findings; in many settings around 95% suffices.
+        polarity: yes_is_bad
+
+  - domain: 3
+    label: "Bias in selection of participants into the study (or into the analysis)"
+    algorithm: domain3
+    structure: >
+      Two independent panels scored separately, combined worst-of, then an
+      escalation ladder (3.6 -> 3.7 -> 3.8) reached only when a panel is serious.
+    questions:
+      - id: "3.1"
+        panel: A
+        response_options: weak_strong_no
+        evidence_mode: manuscript_positive
+        label: "Follow-up began at the start of the compared strategies"
+        intent: >
+          Whether all follow-up time and all outcome events occurring after the
+          strategies began were included in the analysis that produced this
+          result. Where the comparator is no intervention, follow-up may start
+          at any point while participants remain eligible to start. Analyses
+          starting follow-up later (landmark designs, or inclusion of prevalent
+          rather than incident users) drop a period the target trial would have
+          observed, and drop participants with early events — prevalent user
+          bias.
+        assessor_notes: >
+          SN when the effect is likely to differ markedly between excluded and
+          included periods, or when a substantial share of post-initiation
+          follow-up or events was excluded; WN when the omission is unlikely to
+          matter materially.
+      - id: "3.2"
+        panel: A
+        asked_if: "3.1 in {Y, PY}"
+        response_options: standard
+        evidence_mode: manuscript_positive
+        label: "Outcome events in a post-initiation window excluded"
+        intent: >
+          Whether, although follow-up began at initiation, there was a period
+          after initiation during which outcomes were not ascertained or were
+          excluded — immortal time, during which events cannot be observed.
+        polarity: yes_is_bad
+      - id: "3.3"
+        panel: B
+        response_options: standard
+        evidence_mode: manuscript_positive
+        label: "Selection based on post-initiation participant characteristics"
+        intent: >
+          Whether entry into the study or the analysis depended on participant
+          characteristics observed after the intervention began, for reasons
+          beyond those already covered by 3.1 and 3.2. Selection on baseline
+          characteristics belongs to confounding, not here; exclusion for
+          missing data belongs to domain 4.
+        polarity: yes_is_bad
+      - id: "3.4"
+        panel: B
+        asked_if: "3.3 in {Y, PY}"
+        response_options: standard_na
+        evidence_mode: manuscript_positive
+        label: "Those selection variables associated with intervention"
+        intent: >
+          Whether the post-initiation variables driving selection were likely
+          associated with the intervention. Selection bias requires selection to
+          be related to both the intervention side and the outcome side.
+        polarity: yes_is_bad
+      - id: "3.5"
+        panel: B
+        asked_if: "3.4 in {Y, PY}"
+        response_options: standard_na
+        evidence_mode: manuscript_positive
+        label: "Those selection variables influenced by the outcome"
+        intent: >
+          Whether the same variables were likely influenced by the outcome or by
+          a cause of the outcome — closing the second arm of the selection-bias
+          condition.
+        polarity: yes_is_bad
+      - id: "3.6"
+        panel: C
+        asked_if: "3.1 == SN or 3.5 in {Y, PY}"
+        response_options: standard_na
+        evidence_mode: manuscript_positive
+        label: "Analysis corrected for the selection bias"
+        intent: >
+          Whether the analysis is likely to have corrected for the selection
+          biases identified (for example by appropriate weighting).
+      - id: "3.7"
+        panel: C
+        asked_if: "3.6 in {PN, N, NI}"
+        response_options: standard_na
+        evidence_mode: manuscript_positive
+        label: "Sensitivity analyses show minimal impact"
+        intent: >
+          Whether sensitivity analyses demonstrate that the selection biases
+          have minimal impact on the result.
+      - id: "3.8"
+        panel: C
+        asked_if: "3.7 in {PN, N, NI}"
+        response_options: standard_na
+        evidence_mode: manuscript_positive
+        label: "Selection biases severe"
+        intent: >
+          Whether the uncorrected selection biases are severe enough that the
+          result should generally be excluded from evidence syntheses.
+        polarity: yes_is_bad
+
+  - domain: 4
+    label: "Bias due to missing data"
+    algorithm: domain4
+    questions:
+      - id: "4.1"
+        response_options: standard
+        evidence_mode: manuscript_positive
+        label: "Complete data on intervention status"
+      - id: "4.2"
+        response_options: standard
+        evidence_mode: manuscript_positive
+        label: "Complete outcome data"
+      - id: "4.3"
+        response_options: standard
+        evidence_mode: manuscript_positive
+        label: "Complete data on important confounding factors"
+        depends_on: [P1]
+        evidence_mode_override: reviewer_prior
+        note: "Which factors count as important is set by P1, not by the paper."
+      - id: "4.4"
+        asked_if: "any of 4.1, 4.2, 4.3 in {PN, N, NI}"
+        response_options: standard_na
+        evidence_mode: manuscript_positive
+        label: "Result based on a complete-case analysis"
+      - id: "4.5"
+        asked_if: "4.4 in {Y, PY, NI}"
+        response_options: standard_na
+        evidence_mode: manuscript_positive
+        label: "Exclusion from analysis related to the true value of the outcome"
+        intent: >
+          Whether being dropped from the analysis was related to what the
+          participant's outcome actually was. Reported reasons for missingness
+          that are unrelated to the outcome point to N or PN; circumstances in
+          which experiencing the outcome makes measurement less likely (missed
+          appointments, for instance) point to Y.
+        polarity: yes_is_bad
+      - id: "4.6"
+        asked_if: "4.5 in {Y, PY, NI}"
+        response_options: weak_strong_no_na
+        evidence_mode: manuscript_positive
+        label: "Outcome–missingness relationship explained by variables in the model"
+        intent: >
+          Whether every variable that plausibly explains the link between the
+          outcome and its missingness is already in the complete-case analysis
+          model, in which case the residual risk is low.
+        assessor_notes: >
+          A mediator affecting missingness is a special case: adjusting for it
+          would fix the missing-data bias but change the estimand, and it raises
+          domain 1 risk. Multiple imputation is the appropriate route there.
+      - id: "4.7"
+        asked_if: "4.4 in {PN, N}"
+        response_options: standard_na
+        evidence_mode: manuscript_positive
+        label: "Analysis based on imputing missing values"
+      - id: "4.8"
+        asked_if: "4.7 in {Y, PY}"
+        response_options: standard_na
+        evidence_mode: manuscript_positive
+        label: "MAR or MCAR a reasonable assumption"
+        intent: >
+          Whether it is reasonable to treat the incomplete variables as missing
+          at random or missing completely at random. Answer N or PN where there
+          is reason to believe the data are missing not at random, since
+          imputation cannot rescue an MNAR mechanism.
+      - id: "4.9"
+        asked_if: "4.8 in {Y, PY}"
+        response_options: weak_strong_no_na
+        evidence_mode: manuscript_positive
+        label: "Imputation performed appropriately"
+        assessor_notes: >
+          Y/PY requires multiple imputation whose models include both all
+          predictors of missingness in any variable and all variables in the
+          main analysis model. Simple approaches — last observation carried
+          forward, mean imputation — are WN or SN, the choice depending on how
+          much data were missing.
+      - id: "4.10"
+        asked_if: "4.7 in {PN, N, NI}"
+        response_options: weak_strong_no_na
+        evidence_mode: manuscript_positive
+        label: "Appropriate alternative correction used"
+        intent: >
+          For analyses that were neither complete-case nor imputation-based —
+          inverse probability weighting, full information maximum likelihood —
+          whether the method used was appropriate. Weighting depends for its
+          validity on correct specification of the weighting model.
+      - id: "4.11"
+        asked_if: "any of 4.1, 4.2, 4.3 in {PN, N, NI} AND (4.5 in {Y,PY,NI} OR 4.9 in {WN,SN,NI} OR 4.10 in {WN,SN,NI})"
+        response_options: no_ni_na
+        evidence_mode: manuscript_positive
+        label: "Evidence the result was not biased by missing data"
+        intent: >
+          Whether there is positive evidence of robustness — an analysis method
+          unbiased under plausible missingness mechanisms, or sensitivity
+          analyses showing the result changes little across a plausible range of
+          assumptions about the missing values.
+        assessor_notes: >
+          Agreement between imputed and unimputed results is NOT such evidence
+          when the imputation used only outcome, intervention and confounder
+          information; nor is a weighted analysis on its own.
+
+  - domain: 5
+    label: "Bias in measurement of the outcome"
+    algorithm: domain5
+    max_judgement: serious
+    max_judgement_note: "This domain has no critical terminal in the algorithm."
+    questions:
+      - id: "5.1"
+        response_options: standard
+        evidence_mode: manuscript_positive
+        label: "Outcome ascertainment differed between groups"
+        intent: >
+          Whether the outcome could have been measured or ascertained
+          differently across the compared groups — the same methods, thresholds
+          and timing constitute comparable measurement. Diagnostic detection
+          bias under passive data collection, or an intervention that brings
+          extra clinical contact and so extra chances to detect events, are the
+          usual routes to yes.
+        polarity: yes_is_bad
+      - id: "5.2"
+        response_options: standard
+        evidence_mode: manuscript_positive
+        label: "Outcome assessors aware of the intervention received"
+        intent: >
+          Whether whoever assessed the outcome knew which intervention the
+          participant received. Blinding gives N, and so does incidental
+          unawareness without formal blinding. Where participants report their
+          own outcomes they are the assessors, and in observational settings the
+          answer is then usually Y.
+        polarity: yes_is_bad
+      - id: "5.3"
+        asked_if: "5.2 in {Y, PY, NI}"
+        response_options: weak_strong_yes_na
+        evidence_mode: manuscript_positive
+        label: "Assessment could have been influenced by that knowledge"
+        intent: >
+          Whether knowing the intervention could have shaped the outcome
+          assessment. Participant-reported outcomes, observer-reported outcomes
+          requiring judgement, and provider-decision outcomes are susceptible;
+          objective observer-reported outcomes such as all-cause mortality or
+          laboratory values generally are not.
+        assessor_notes: >
+          The distinction is between knowledge that could have influenced
+          assessment with no particular reason to think it did (WY), and
+          knowledge likely to have influenced it (SY) — the latter where strong
+          belief in or preference for a benefit or harm is in play.
+        polarity: yes_is_bad
+
+  - domain: 6
+    label: "Bias in selection of the reported result"
+    algorithm: domain6
+    questions:
+      - id: "6.1"
+        response_options: standard
+        evidence_mode: manuscript_positive
+        label: "Result reported in accordance with a prespecified analysis plan"
+        intent: >
+          Whether this result was reported in line with an analysis plan
+          finalized before unblinded outcome data were available for analysis.
+        depends_on: [D1]
+        note: "Answerable only against a protocol or SAP; without one the honest answer is usually NI."
+      - id: "6.2"
+        asked_if: "6.1 in {PN, N, NI}"
+        response_options: standard
+        evidence_mode: manuscript_positive
+        label: "Result selected from multiple outcome measurements"
+        polarity: yes_is_bad
+      - id: "6.3"
+        asked_if: "6.1 in {PN, N, NI}"
+        response_options: standard
+        evidence_mode: manuscript_positive
+        label: "Result selected from multiple analyses of the data"
+        polarity: yes_is_bad
+      - id: "6.4"
+        asked_if: "6.1 in {PN, N, NI}"
+        response_options: standard
+        evidence_mode: manuscript_positive
+        label: "Result selected from multiple subgroups"
+        polarity: yes_is_bad
+        note: "Large routinely-collected cohorts make many subgroups available; weigh accordingly."
+
+# ---------------------------------------------------------------------------
+# Optional direction-of-bias fields (per domain and overall)
+# ---------------------------------------------------------------------------
+direction_of_bias:
+  optional: true
+  domain_1_options: [upward, downward, no_information_or_unpredictable]
+  other_domain_options: [favours_intervention, favours_comparator, towards_null, away_from_null, unpredictable]
+  overall_options:
+    [upward, downward, favours_intervention, favours_comparator, towards_null, away_from_null, unpredictable]
+
+# ---------------------------------------------------------------------------
+# Overall judgement + overrides
+# ---------------------------------------------------------------------------
+overall:
+  algorithm: overall
+  default_rule: worst_of_domains
+  permitted_escalations:
+    - from: several_moderate
+      to: serious
+      requires_justification: true
+    - from: several_serious
+      to: critical
+      requires_justification: true
+
+override_policy: >
+  Any departure from the algorithm's output — at domain or overall level — must
+  carry a recorded justification. The tool is explicit that transparency and
+  reasonableness are preferred to mechanistic adherence, so overrides are
+  legitimate; silent overrides are not. Renders must show algorithm output and
+  final judgement side by side whenever they differ.
+
+human_ratification:
+  required_before_finalization: true
+  minimum:
+    - P1 and the confounding-factor table
+    - C4 (selects the domain 1 variant)
+    - every answer with evidence_mode == reviewer_prior
+    - every override
+  rationale: >
+    A ROBINS-I judgement feeds evidence synthesis and certainty ratings. This
+    spec supports an assessor; it does not replace one.
