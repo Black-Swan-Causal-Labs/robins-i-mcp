@@ -71,12 +71,33 @@ analysis *does*, not on the label the authors give their estimand — on the
 reference paper, the protocol table says "per-protocol effect" and the analysis
 is intention-to-treat.
 
-## Install and run
+## Install
+
+```bash
+pip install robins-i-mcp
+```
+
+Then register it with your MCP client:
+
+```jsonc
+{ "mcpServers": { "robins-i": { "command": "robins-i-mcp" } } }
+```
+
+Or run it with no install at all:
+
+```bash
+uvx robins-i-mcp
+```
+
+Also on the [MCP registry](https://registry.modelcontextprotocol.io) as
+`com.blackswancausallabs/robins-i-mcp`.
+
+## Develop
 
 ```bash
 python3 -m venv .venv && .venv/bin/python -m pip install -e ".[dev]"
 .venv/bin/python -m pytest tests/ -q      # 205 passed
-.venv/bin/robins-i-mcp                      # stdio MCP server
+.venv/bin/robins-i-mcp                    # stdio MCP server
 ```
 
 ## Tools

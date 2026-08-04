@@ -70,7 +70,40 @@ python3 -m venv .venv && .venv/bin/python -m pip install -e ".[dev]"
 ```
 
 > `mcp` is pinned `>=1.9,<2` — 2.0 replaced `FastMCP` with `MCPServer`. See
-> DECISIONS.md. Not yet registered in any client's MCP config.
+> DECISIONS.md.
+
+## Published (2026-08-04)
+
+| | |
+|---|---|
+| GitHub | https://github.com/Black-Swan-Causal-Labs/robins-i-mcp (public) |
+| PyPI | `robins-i-mcp` 0.1.0 |
+| MCP registry | `com.blackswancausallabs/robins-i-mcp`, status `active` |
+
+Install and register in a client:
+
+```jsonc
+// claude_desktop_config.json (or equivalent)
+{ "mcpServers": { "robins-i": { "command": "robins-i-mcp" } } }
+```
+
+after `pip install robins-i-mcp` (or `uvx robins-i-mcp` with no install).
+
+Registry publication is DNS-verified against `blackswancausallabs.com`. The
+signing key is `~/.config/mcp-publisher/bscl-mcp-dns-key.pem` — it is a PEM,
+and `mcp-publisher` wants raw hex with OpenSSL's leading `00` stripped:
+
+```bash
+KEY=$(openssl ec -in ~/.config/mcp-publisher/bscl-mcp-dns-key.pem -text -noout 2>/dev/null \
+      | awk '/priv:/{f=1;next}/pub:/{f=0}f' | tr -d ' :\n' | sed 's/^00//')
+mcp-publisher login dns --domain blackswancausallabs.com --algorithm ecdsap384 --private-key "$KEY"
+unset KEY
+```
+
+Two things that cost time the first time: the registry caps `description` at
+100 characters, and it verifies PyPI ownership through the `mcp-name` comment
+in the README — so **PyPI must be uploaded before the registry publish**, or
+validation fails.
 
 ## The tool surface (9 tools)
 
@@ -198,9 +231,10 @@ server state involved.
 
 ## NEXT
 
-- **Register the server** in a client config and drive it over stdio. Everything
-  so far has been exercised in-process and through `mcp.call_tool`, which
-  validates the output schemas but is not the same as a real client session.
+- **Drive it over stdio from a real client.** Published and installable, but
+  every exercise so far has been in-process or through `mcp.call_tool` — that
+  validates the output schemas, which is not the same as a real client session.
+  This is the first thing to do next.
 - **Exercise `parse_pmcid` against the live Europe PMC API.** The port is a
   straight lift and the code path is unchanged from target-mcp, but it has not
   been run here.

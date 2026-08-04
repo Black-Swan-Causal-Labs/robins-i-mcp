@@ -7,6 +7,49 @@ Format: **what** — why — status.
 
 ---
 
+## 2026-08-04 · Named for the instrument, not the family: robins-i-mcp
+Published as `robins-i-mcp` / `com.blackswancausallabs/robins-i-mcp`, after
+briefly being `robins-mcp`.
+
+- **Why not `robins-mcp`:** ROBINS-I (interventions) and ROBINS-E (exposures) are
+  different published tools. The short name claimed the whole family for one
+  member of it and would have become actively confusing the day a ROBINS-E
+  server existed — which is a plausible thing to build next, since it is the
+  same shape.
+- **Why not `robins-i-v2-mcp`:** the instrument version is carried by the SPEC
+  (`robins-i-v2-cohort-0.1.0.yaml`), and the package is deliberately a container
+  for versioned specs — TRANSCRIPTION-NOTES says a variant for other designs gets
+  its own spec file, not its own package. Naming the package after one spec would
+  contradict that and be wrong the day a second spec lands. It would also mean a
+  new PyPI name and a new registry entry rather than a version bump.
+- **So: specific about the instrument, generic across its versions.** Version
+  discoverability is handled where it actually bites — the registry title is
+  "ROBINS-I V2 MCP" and the description leads with "ROBINS-I V2 (not V1)".
+- The rename touched the distribution, entry point, import package, registry
+  name and the extractor string stamped into every report's provenance. Free at
+  the time because nothing had been published; it would not have been free an
+  hour later.
+- Status: done. Version stayed 0.1.0 — nothing was released under the old name.
+
+## 2026-08-04 · Publication mechanics worth not rediscovering
+Three things cost time and are not obvious from the registry docs.
+
+- **PyPI must precede the registry publish.** The registry verifies ownership by
+  looking for an `mcp-name:` HTML comment in the PyPI long_description — which
+  means the package must already be up there. Publishing the other way round
+  fails validation with no useful hint.
+- **`description` is capped at 100 characters.** The first attempt returned 422
+  with a 290-character description; the explanation of the V1/V2 domain
+  difference belongs in the README, not the registry blurb.
+- **The DNS signing key is a PEM but the tool wants raw hex**, and OpenSSL emits
+  49 bytes for a 48-byte P-384 key because it prepends a `00`. Strip it. Full
+  command in STATUS.md.
+- **Verify a key before using it.** A gitignored file named `.keyfile` in the
+  sibling repo turned out to hold an Anthropic API key for that server's judge
+  mode, not a signing key. The check that would have caught it in advance:
+  derive the public half and compare it against the DNS TXT record. That check
+  is what finally confirmed the right key.
+
 ## 2026-08-03 · The unit of interchange between runs is a record, not server state
 `submit_answers(domain=0)` returns a small, flat, JSON-native `record`
 (`review.assessment_record`, versioned by `RECORD_VERSION`). `export_robvis`
