@@ -218,6 +218,12 @@ row in the resulting figure traces back to a document rather than being an
 anonymous coloured square. That also lets the export notice when a set mixes
 algorithm transcriptions and warn that the judgements are not comparable.
 
+**robvis is no longer supported by its authors' host.** As of 2026-08-04
+riskofbias.info states they are "no longer able to support robvis or any Excel
+tool implementations". The export still works and robvis is still what reviewers
+recognise, but do not assume it will be maintained, and do not treat it as the
+only rendering path forever.
+
 `export_robvis` is not a column dump. Its default `layout="robins_i"` places
 each V2 judgement into its correct **V1 slot** — V1 has seven domains and orders
 selection *before* classification, which V2 swaps — and marks the dropped
@@ -279,7 +285,11 @@ server state involved.
   riskofbias.info). Three things at once now: a possible wording grant, an
   independent cross-check of the hand-traced algorithms, and whether a
   non-follow-up variant is planned (it would need its own spec and its own
-  algorithms, not an extension of this one).
+  algorithms, not an extension of this one). This has become MORE important, not
+  less: as of 2026-08-04 there is no official implementation and none announced,
+  so there is no other route to verifying the transcription. An earlier note here
+  said an implementation was in development; that was wrong, and the page says
+  nothing of the sort.
 - **Gold-standard validation.** Cochrane reviews publish ROBINS-I tables, but
   almost all are **V1**, and V2 restructured the domains (dropped "deviations
   from intended interventions", added variant A/B). Validate on overlapping

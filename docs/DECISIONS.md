@@ -7,6 +7,32 @@ Format: **what** — why — status.
 
 ---
 
+## 2026-08-04 · No implementation exists to check against, and robvis is unsupported
+Two facts about the surrounding ecosystem, verified against riskofbias.info on
+2026-08-04, both of which change other entries here.
+
+- **There is no official ROBINS-I V2 implementation, and none announced.** The
+  page offers the tool as PDF and Google Docs and nothing else. An earlier note
+  in this project claimed the group had an online implementation with automatic
+  question selection and algorithm-derived judgements in development. That was
+  wrong or stale and has been corrected. Consequence: the "verify against the
+  official implementation when it ships" plan in TRANSCRIPTION-NOTES has no
+  timetable, so contacting the development group is now the ONLY route to an
+  external check on the hand-traced algorithms. That raises its priority.
+- **robvis is no longer supported.** The same page: "we are no longer able to
+  support robvis or any Excel tool implementations." `export_robvis` therefore
+  targets a tool its authors' host has stepped back from. Not a reason to remove
+  it — robvis is still what reviewers recognise, the V1-slot mapping is still
+  the thing it gets wrong, and the CSV is a plain interchange format that
+  outlives any one renderer. But the "robvis is the figure, we should not build
+  a parallel one" argument that removed `render_review.py` is weaker than it was
+  on 2026-08-03, and should be revisited if robvis actually decays.
+- **Nothing automates ROBINS-I assessment.** Automation exists for randomized
+  trial tools (RobotReviewer for RoB 1, ROBoto2 for RoB 2, both RCT-only). What
+  exists for ROBINS-I is review-management software that captures judgements in
+  a form. Safe to state publicly, and worth stating precisely: the manual part
+  is one result at a time, by someone reading the paper.
+
 ## 2026-08-04 · LICENSE stays verbatim; copyright lives in NOTICE and SPDX headers
 Prompted by a good question: LICENSE contains
 `Copyright [yyyy] [name of copyright owner]` — should that carry BSCL's details?
