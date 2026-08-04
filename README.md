@@ -13,13 +13,15 @@ complementary on the same paper.
 > release of ROBINS-I V2 as still a draft, subject to change. Every report
 > stamps that in its provenance line. See `NOTICE` and `TRANSCRIPTION-NOTES.md`.
 >
-> **Follow-up studies — which is broader than "cohort studies".** The criterion
-> is structural: individuals observed forward from a defined time zero under the
-> contrasted strategies. Target trial emulations, new-user active-comparator
-> designs and registry comparisons all qualify; both worked examples below are
-> TTEs. Designs with no follow-up structure do not. No variant for other designs
-> is published yet. Note that "Variant A / Variant B" inside the tool means the
-> two forms of Domain 1 selected by C4 — not a study design.
+> **Follow-up cohort studies.** "Follow-up" and "cohort" name one structural
+> property — a defined time zero, individuals followed forward under the
+> contrasted strategies — so read the property, not a design label. Target trial
+> emulations are the central use case and are cohort studies in exactly this
+> sense; both worked examples below are TTEs. Designs with no follow-up
+> structure are out; designs *sampled from* a cohort (nested case-control,
+> case-cohort) are an open question the source does not address. No variant for
+> other designs is published yet. Note that "Variant A / Variant B" inside the
+> tool means the two forms of Domain 1 selected by C4 — not a study design.
 
 ## What makes it different from asking a model
 

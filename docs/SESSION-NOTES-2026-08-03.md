@@ -105,27 +105,34 @@ stamps the draft status onto every report's provenance line, and
 carrying `robins-i-v2-cohort-0.1.0` stay comparable. Bump it when the content
 moves.
 
-On the original question I got it wrong first time and was corrected. I answered
-"cohort only", following the source's parenthetical gloss "follow-up (cohort)
-studies". The operative term is **follow-up**; "(cohort)" appears once, and the
-phrase "cohort study" appears exactly once in 49 pages, in a time-varying
-confounding example. The document never enumerates eligible designs.
+The original question took three passes to answer properly, and the two wrong
+turns are more interesting than the answer.
 
-The narrow reading is not a terminological quibble — it would exclude target
-trial emulations, which are the central use case and which is what *both* worked
-examples in this repo are. Neither Dickerman nor Jabagi is a textbook cohort
-study. The criterion is structural: observed forward from a defined time zero
-under the contrasted strategies. Nested case-control and case-cohort sit in a
-genuinely unresolved middle that the source does not address.
+**First pass, too narrow:** answered "cohort only", taking the outline's
+parenthetical gloss as the scope. **Second pass, overcorrecting:** on pushback,
+grepped the PDF, found "cohort study" appears exactly once in 49 pages against a
+title that says "follow-up studies", and concluded the operative term is
+follow-up and the scope is *wider* than cohort. **Where it actually lands:**
+follow-up cohort studies. The two words name one structural property — that is
+precisely why the source writes them together rather than as alternatives. A
+cohort study is a follow-up study. TTEs are not outside "cohort study"; they are
+cohort studies run with particular design discipline.
 
-I had also asserted that no other design variant exists, on one page fetch
-summarised by a small model. Too strong for a negative claim; the supportable
-version is that none is *published*, with separate tools reported to be in
-development.
+The second wrong turn is the instructive one. The grep was good evidence about
+what the document *says* and no evidence at all about what the terms *mean*, and
+a word-frequency result got over-read as a semantic distinction. Worth
+remembering: frequency analysis of a term is not analysis of a concept.
 
-Two method lessons, both cheap: the primary source settled this and the secondary
-summary did not — grepping the PDF for design vocabulary was worth more than any
-description of the tool. And a single fetch is not evidence for a negative.
+What survives from the overcorrection, and is worth keeping: designs **sampled
+from** a cohort — nested case-control, case-cohort — are where the wording
+genuinely bites. Cohort estimand, follow-up structure underneath, but not a
+cohort analysis. The source is silent; it stays a documented judgement call and
+is now on the list to raise with the development group.
+
+Separately and independently, I had asserted that no other design variant exists,
+on one page fetch summarised by a small model. Too strong for a negative claim;
+the supportable version is that none is *published*, with separate tools reported
+to be in development. That one was a plain evidential error, not a semantic one.
 
 ## Where to pick up
 

@@ -45,14 +45,16 @@ source_status_note: >
   Re-check riskofbias.info for a newer release before relying on any assessment.
 
 variant_scope_note: >
-  READ "follow_up" AS THE OPERATIVE TERM, NOT "cohort". The source titles itself
-  the tool for follow-up studies; "(cohort)" appears once, as a parenthetical
-  gloss, and the phrase "cohort study" appears exactly once in 49 pages — in an
-  example about time-varying confounding, not a scope statement. The document
-  never enumerates eligible designs. Reading the scope as "cohort studies" is
-  narrower than the source and would wrongly exclude target trial emulations,
-  which are the central use case. See guideline_scope above for the structural
-  criterion that actually applies.
+  Follow-up cohort studies — the source's own phrasing, with "follow-up" and
+  "cohort" as two names for one structural property rather than two criteria.
+  The document never enumerates eligible designs, so read the property (a
+  defined time zero, individuals followed forward under the contrasted
+  strategies) rather than hunting for a design label. Target trial emulations
+  are the central use case and are cohort studies in exactly this sense; both
+  worked examples in examples/ are TTEs.
+
+  The one place the wording genuinely bites is designs SAMPLED FROM a cohort —
+  see the open question in guideline_scope above.
 
   As of 2026-08-03 no variant for other designs is PUBLISHED — riskofbias.info
   lists the Nov 2025 draft and the archived Nov 2024 release, both the same
@@ -69,11 +71,15 @@ guideline_scope: >
   being contrasted, and are sorted into those groups by what they were
   prescribed or took, since nothing was allocated at random.
 
-  The criterion is structural, not a design label. It is satisfied by far more
-  than what is conventionally filed under "cohort study" — target trial
-  emulations on routinely collected data, new-user active-comparator designs,
-  registry-based comparisons and pragmatic non-randomized comparisons all
-  qualify. It is NOT satisfied by designs without a follow-up structure
+  In short: follow-up cohort studies, which is how the source itself puts it.
+  "Follow-up" and "cohort" name the same structural property here and are
+  written together for that reason, not as alternatives.
+
+  The criterion is that property, not a design name, so it is satisfied by
+  anything with that shape however it is labelled — target trial emulations on
+  routinely collected data, new-user active-comparator designs, registry-based
+  and pragmatic non-randomized comparisons are all cohort studies in this sense
+  and all qualify. It is NOT satisfied by designs without a follow-up structure
   (cross-sectional, conventional case-control, before-and-after), because the
   architecture presumes a time zero and the possibility of time-varying
   confounding.

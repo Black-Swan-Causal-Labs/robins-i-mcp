@@ -7,35 +7,40 @@ Format: **what** — why — status.
 
 ---
 
-## 2026-08-03 · Scope is "follow-up", not "cohort" — correcting an error made earlier the same day
-`guideline_scope` now states a structural criterion rather than a design label,
-and `variant_scope_note` warns against the narrow reading explicitly.
-- **The error:** the source's outline glosses its scope as "follow-up (cohort)
-  studies", and earlier entries in this repo let the parenthetical become the
-  scope, describing the tool as being for cohort studies. That is narrower than
-  the source. The title says follow-up studies; the phrase "cohort study" occurs
-  exactly once in 49 pages, in a time-varying-confounding example; and no list of
-  eligible designs appears anywhere in the document.
-- **Why it mattered practically, not just terminologically:** the narrow reading
-  would exclude target trial emulations, which are the central use case and are
-  what BOTH worked examples in `examples/` actually are. Neither Dickerman nor
-  Jabagi is a textbook cohort study.
-- **The criterion that does apply** is structural: individuals observed forward
-  from a defined start of follow-up under the contrasted strategies. Satisfied by
-  TTEs, new-user active-comparator designs, registry and pragmatic comparisons;
-  not satisfied by cross-sectional, conventional case-control, or before-after.
-- **Left open deliberately:** nested case-control and case-cohort, where sampling
-  is an efficiency device inside a follow-up study. The source is silent. Recorded
-  as a judgement call to make and document, not resolved by fiat.
-- **Second correction, same entry:** the claim that no other design variant
-  "exists" was asserted from a single page fetch summarised by a small model —
-  thin evidence for a negative. The supportable statement is that none is
-  *published*, with separate tools reported to be in development.
-- **Method note worth keeping:** the primary source settled this and the
-  secondary summary did not. Grepping the PDF for design vocabulary — one hit for
-  "cohort study", zero for "case-control" — was more informative than any
-  description of the tool.
-- Status: corrected across spec, STATUS, TRANSCRIPTION-NOTES and README.
+## 2026-08-03 · Scope is follow-up cohort studies; read the property, not the label
+`guideline_scope` states the structural property and names the one case where
+the wording genuinely bites. Settled after two wrong turns in one conversation,
+both recorded here because the wrong turns are instructive.
+
+- **Wrong turn 1 (too narrow):** answered that the tool is for cohort studies,
+  reading the outline's parenthetical as the scope.
+- **Wrong turn 2 (too broad, overcorrecting):** answered that "follow-up" is the
+  operative term and the scope is *wider* than "cohort study". It isn't. The two
+  words name one structural property, which is why the source writes them
+  together rather than as alternatives — a cohort study IS a follow-up study.
+  TTEs and new-user active-comparator designs are not outside "cohort study";
+  they are cohort studies run with particular design discipline.
+- **Where it lands:** follow-up cohort studies, the source's own phrasing. The
+  criterion is the property — a defined time zero, individuals followed forward
+  under the contrasted strategies — not a design name, because the document
+  never enumerates eligible designs. Out: cross-sectional, conventional
+  case-control, before-and-after.
+- **The one place the wording genuinely bites**, and the part of the correction
+  worth keeping: designs SAMPLED FROM a cohort — nested case-control,
+  case-cohort. Cohort estimand, follow-up structure underneath, but not a cohort
+  analysis. The source is silent. Recorded as a judgement call to document, not
+  resolved by fiat, and worth raising with the development group.
+- **A separate, real error, independent of the above:** the claim that no other
+  design variant "exists" was asserted from a single page fetch summarised by a
+  small model — thin evidence for a negative. The supportable statement is that
+  none is *published*, with separate tools reported to be in development.
+- **Method note worth keeping:** the primary source settled the factual questions
+  and the secondary summary did not. Grepping the PDF for design vocabulary — one
+  hit for "cohort study", zero for "case-control" — beat any description of the
+  tool. But note that grep established what the document *says*, not what the
+  terms *mean*; the second wrong turn came from over-reading a word-frequency
+  result as a semantic distinction.
+- Status: settled across spec, STATUS, TRANSCRIPTION-NOTES and README.
 
 ## 2026-08-03 · The source is a draft, and every report says so
 `report.SOURCE_STATUS` is stamped into `provenance()` and the rendered
