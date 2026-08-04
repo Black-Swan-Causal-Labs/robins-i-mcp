@@ -1,6 +1,6 @@
-# robins-mcp
+# robins-i-mcp
 
-<!-- mcp-name: com.blackswancausallabs/robins-mcp -->
+<!-- mcp-name: com.blackswancausallabs/robins-i-mcp -->
 
 An MCP server implementing **ROBINS-I V2** (Risk Of Bias In Non-randomized
 Studies – of Interventions, follow-up/cohort variant) as a deterministic,
@@ -76,7 +76,7 @@ is intention-to-treat.
 ```bash
 python3 -m venv .venv && .venv/bin/python -m pip install -e ".[dev]"
 .venv/bin/python -m pytest tests/ -q      # 205 passed
-.venv/bin/robins-mcp                      # stdio MCP server
+.venv/bin/robins-i-mcp                      # stdio MCP server
 ```
 
 ## Tools

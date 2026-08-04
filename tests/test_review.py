@@ -22,10 +22,10 @@ import json
 
 import pytest
 
-from robins_mcp import review
-from robins_mcp.algorithms import AlgorithmResult, Judgement
-from robins_mcp.report import Assessment, DomainOutcome
-from robins_mcp.review import RECORD_VERSION, RecordError
+from robins_i_mcp import review
+from robins_i_mcp.algorithms import AlgorithmResult, Judgement
+from robins_i_mcp.report import Assessment, DomainOutcome
+from robins_i_mcp.review import RECORD_VERSION, RecordError
 
 
 def _assessment(result_id: str, judgements: dict[int, Judgement], *,

@@ -37,7 +37,7 @@ INGEST_VERSION = "0.1.0"
 
 
 def _extractor_stamp(engine: str) -> str:
-    return f"robins-mcp-ingest/{INGEST_VERSION} ({engine})"
+    return f"robins-i-mcp-ingest/{INGEST_VERSION} ({engine})"
 
 
 EXTRACTOR_VERSION = _extractor_stamp("pypdf")

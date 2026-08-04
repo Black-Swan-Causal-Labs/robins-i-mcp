@@ -13,7 +13,7 @@ from __future__ import annotations
 
 import pytest
 
-from robins_mcp import server as srv
+from robins_i_mcp import server as srv
 
 # A miniature cohort study carrying just enough text for quotes to resolve and
 # for the absence searches to have something to fail to find.

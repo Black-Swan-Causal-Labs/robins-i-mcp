@@ -19,7 +19,7 @@ The published tool is licensed CC BY-NC-ND 4.0. That licence is stricter than
 TARGET's CC BY-ND, and it is the reason this repository is built the way it is:
 
   * NO published wording is reproduced anywhere in this repository. The encoded
-    specification (robins_mcp/specs/*.yaml) re-expresses the INTENT of each
+    specification (robins_i_mcp/specs/*.yaml) re-expresses the INTENT of each
     signalling question in original wording. There is deliberately no verbatim
     OFFICIAL_TEXT mapping of the kind the sibling TARGET server ships, and no
     projection onto a published form.
@@ -28,7 +28,7 @@ TARGET's CC BY-ND, and it is the reason this repository is built the way it is:
     C4 and so on), response-option letters, and domain names. These are
     functional identifiers, not expression.
 
-  * The judgement algorithms in robins_mcp/algorithms.py are decision logic —
+  * The judgement algorithms in robins_i_mcp/algorithms.py are decision logic —
     methods and procedures, not copyrightable expression. They were traced by
     hand from the raster flowcharts in the source document; see
     TRANSCRIPTION-NOTES.md for how, and for what remains unverified.
@@ -41,7 +41,7 @@ Trademark, not copyright, is the live constraint. Nominative use ("assessed
 using the ROBINS-I V2 framework") is fine. Do not use ROBINS-I or Cochrane
 logos, do not describe output as "official" or "certified", and do not imitate
 the layout of riskofbias.info's own output. Every report this software produces
-carries a non-endorsement statement to that effect (robins_mcp/report.py).
+carries a non-endorsement statement to that effect (robins_i_mcp/report.py).
 
 --------------------------------------------------------------------------------
 Status of the source

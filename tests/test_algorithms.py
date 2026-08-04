@@ -16,8 +16,8 @@ import itertools
 
 import pytest
 
-from robins_mcp import algorithms as alg
-from robins_mcp.algorithms import Judgement as J
+from robins_i_mcp import algorithms as alg
+from robins_i_mcp.algorithms import Judgement as J
 
 
 # --------------------------------------------------------------------------- #

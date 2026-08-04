@@ -372,7 +372,7 @@ judgements; a human may override with a recorded justification.
 - Status: done.
 
 ## 2026-07-28 · A separate server; copy from target-mcp first, factor later
-`robins-mcp` is its own package. `ingest.py` was copied from the TARGET server
+`robins-i-mcp` is its own package. `ingest.py` was copied from the TARGET server
 and adapted rather than extracted into a shared core.
 - **Why separate:** different object model (result-scoped), different verdict
   vocabulary, different licence constraints on wording.

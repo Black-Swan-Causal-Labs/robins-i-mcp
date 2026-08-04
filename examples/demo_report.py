@@ -16,9 +16,9 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from robins_mcp import algorithms as alg, render_html
-from robins_mcp.algorithms import Judgement as J
-from robins_mcp.report import Answer, Assessment, DomainOutcome
+from robins_i_mcp import algorithms as alg, render_html
+from robins_i_mcp.algorithms import Judgement as J
+from robins_i_mcp.report import Answer, Assessment, DomainOutcome
 
 ANSWERS = {
     # domain 1 (variant A — intention-to-treat)

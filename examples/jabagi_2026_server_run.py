@@ -21,7 +21,7 @@ Run: python examples/jabagi_2026_server_run.py
 import json, sys
 from pathlib import Path
 
-from robins_mcp import server as S
+from robins_i_mcp import server as S
 
 from _papers import PAPERS as PUBS, require
 

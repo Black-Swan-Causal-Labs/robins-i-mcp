@@ -39,8 +39,8 @@ and what still needs external verification.
 ## State: **server built and running**; verified on two real papers
 
 ```
-robins-mcp/
-├── robins_mcp/
+robins-i-mcp/
+├── robins_i_mcp/
 │   ├── specs/robins-i-v2-cohort-0.1.0.yaml   spec: 13 preliminaries, 40 SQs, 6 domains
 │   ├── spec.py            spec loader + own-words question labels
 │   ├── algorithms.py      7 domain algorithms + overall, as explicit edge graphs
@@ -57,7 +57,7 @@ robins-mcp/
 │   ├── review_from_records.py       cross-session: save records, aggregate from disk
 │   └── demo_report.py               synthetic, exercises all three flag paths
 ├── tests/                 205 passing (137 library + 43 server + 25 record/export)
-├── pyproject.toml         installable; entry point `robins-mcp`
+├── pyproject.toml         installable; entry point `robins-i-mcp`
 └── docs/                  DECISIONS.md, STATUS.md
 ```
 
@@ -66,7 +66,7 @@ Setup and run:
 python3 -m venv .venv && .venv/bin/python -m pip install -e ".[dev]"
 .venv/bin/python -m pytest tests/ -q          # 202 passed
 .venv/bin/python examples/jabagi_2026_server_run.py
-.venv/bin/robins-mcp                          # stdio MCP server
+.venv/bin/robins-i-mcp                          # stdio MCP server
 ```
 
 > `mcp` is pinned `>=1.9,<2` — 2.0 replaced `FastMCP` with `MCPServer`. See

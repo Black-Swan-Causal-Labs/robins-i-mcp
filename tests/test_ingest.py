@@ -10,8 +10,8 @@ from __future__ import annotations
 
 import pytest
 
-from robins_mcp import ingest
-from robins_mcp.ingest import QuoteNotFound
+from robins_i_mcp import ingest
+from robins_i_mcp.ingest import QuoteNotFound
 
 # A miniature paper with the same pathologies as a real one.
 PAPER = """Comparative effectiveness of drug A versus drug B

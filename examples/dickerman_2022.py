@@ -24,8 +24,8 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from robins_mcp import algorithms as alg, ingest, render_html
-from robins_mcp.report import Answer, Assessment, DomainOutcome
+from robins_i_mcp import algorithms as alg, ingest, render_html
+from robins_i_mcp.report import Answer, Assessment, DomainOutcome
 
 # --------------------------------------------------------------------------- #
 # Ingest the bundle first: quotes are resolved against THIS text, and the

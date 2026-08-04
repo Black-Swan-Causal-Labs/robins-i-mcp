@@ -20,7 +20,7 @@ import json
 import tempfile
 from pathlib import Path
 
-from robins_mcp import review, server as S
+from robins_i_mcp import review, server as S
 
 import dickerman_2022 as D
 import jabagi_2026_server_run as J

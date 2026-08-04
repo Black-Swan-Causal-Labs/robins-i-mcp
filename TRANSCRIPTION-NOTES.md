@@ -23,11 +23,11 @@ for follow-up (cohort) studies, 20 November 2025, 49 pp.
 
 Two artefacts were produced from it:
 
-- `robins_mcp/specs/robins-i-v2-cohort-0.1.0.yaml` — preliminaries, the
+- `robins_i_mcp/specs/robins-i-v2-cohort-0.1.0.yaml` — preliminaries, the
   confounding-factor table schema, and all signalling questions with their
   response-option sets, gating conditions and evidence modes. Question *intent*
   is in original words; no published wording is reproduced.
-- `robins_mcp/algorithms.py` — the seven domain algorithms plus the overall
+- `robins_i_mcp/algorithms.py` — the seven domain algorithms plus the overall
   algorithm. 111 tests pass (`pytest tests/`).
 
 ## How the algorithms were obtained
