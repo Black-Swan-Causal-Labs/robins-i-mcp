@@ -19,10 +19,13 @@ event strongly associated with the intervention.
 Run: python examples/jabagi_2026_server_run.py
 """
 import json, sys
+from pathlib import Path
 
 from robins_mcp import server as S
 
-PUBS = "/Users/jddmacbook/Desktop/Testing Folder for AI/TARGET Checklist MCP/other pubs"
+from _papers import PAPERS as PUBS, require
+
+require("TTE example 1.pdf", "TTE example 1 SUPPLEMENT.docx")
 CITATION = (
     "Jabagi, M.-J., Bertrand, M., Gabet, A., Tréluyer, L., Kolla, E., Rachas, A., "
     "Olié, V., & Zureik, M. (2026). Maternal RSVpreF immunisation against infant RSV "
@@ -454,7 +457,7 @@ def main():
     print(f"\nprovenance: {final['provenance']['algorithm_fingerprint']} / "
           f"text {final['provenance']['text_sha256'][:12]} / "
           f"{final['provenance']['extractor_version']}")
-    out_path = "/Users/jddmacbook/Desktop/Testing Folder for AI/Robins-I 2025/robins-mcp/jabagi_2026_robins.html"
+    out_path = str(Path(__file__).resolve().parents[1] / "jabagi_2026_robins.html")
     open(out_path, "w").write(final["report"]["html"])
     print(f"\nwrote {out_path} ({len(final['report']['html'])} bytes)")
 

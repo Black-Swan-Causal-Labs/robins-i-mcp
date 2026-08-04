@@ -31,7 +31,9 @@ from robins_mcp.report import Answer, Assessment, DomainOutcome
 # Ingest the bundle first: quotes are resolved against THIS text, and the
 # absence checks below are generated from it rather than asserted by hand.
 # --------------------------------------------------------------------------- #
-PAPERS = Path("/Users/jddmacbook/Desktop/Testing Folder for AI/TARGET Checklist MCP/other pubs")
+from _papers import PAPERS, require
+
+require("Dickerman 2022.pdf", "Dickerman 2022 SUPPLEMENT.pdf")
 
 def load_bundle() -> ingest.SectionMap:
     main = ingest.parse_pdf(PAPERS / "Dickerman 2022.pdf", manuscript_id="NEJMoa2115463")

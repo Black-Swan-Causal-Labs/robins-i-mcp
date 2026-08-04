@@ -143,7 +143,10 @@ See `examples/review_from_records.py`.
   fails at 1.3 rather than 1.1, because gestational age at birth and birth
   weight are matched on despite being realised after the intervention.
 
-Both require their PDFs; paths are at the top of each file.
+The papers themselves are **not** in this repository — they are published
+articles and not ours to redistribute. Put your own copies in `papers/`, or
+point `ROBINS_MCP_PAPERS` at the directory holding them; the examples name the
+files they need and fail with that message if they are absent.
 
 ## Documentation
 

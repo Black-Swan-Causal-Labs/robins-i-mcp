@@ -25,7 +25,10 @@ from robins_mcp import review, server as S
 import dickerman_2022 as D
 import jabagi_2026_server_run as J
 
-PUBS = Path("/Users/jddmacbook/Desktop/Testing Folder for AI/TARGET Checklist MCP/other pubs")
+from _papers import PAPERS as PUBS, require
+require("Dickerman 2022.pdf", "Dickerman 2022 SUPPLEMENT.pdf",
+        "TTE example 1.pdf", "TTE example 1 SUPPLEMENT.docx")
+
 REVIEW = "rsv-and-covid-vaccine-effectiveness"
 RECORDS = Path(tempfile.mkdtemp(prefix="robins-records-"))
 
