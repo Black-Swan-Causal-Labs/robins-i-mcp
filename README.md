@@ -1,5 +1,7 @@
 # robins-mcp
 
+<!-- mcp-name: com.blackswancausallabs/robins-mcp -->
+
 An MCP server implementing **ROBINS-I V2** (Risk Of Bias In Non-randomized
 Studies – of Interventions, follow-up/cohort variant) as a deterministic,
 provenanced assessment engine.
