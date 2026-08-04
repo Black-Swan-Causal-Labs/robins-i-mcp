@@ -1,3 +1,5 @@
+# Copyright 2026 Black Swan Causal Labs
+# SPDX-License-Identifier: Apache-2.0
 """Retrieval layer: fetch main text (JATS) and supplements for a PMC article.
 
 Ported from the TARGET server. Covers the open-access PMC tier via Europe PMC:

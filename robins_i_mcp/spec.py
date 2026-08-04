@@ -1,3 +1,5 @@
+# Copyright 2026 Black Swan Causal Labs
+# SPDX-License-Identifier: Apache-2.0
 """Loader for the encoded ROBINS-I specification.
 
 Exposes the own-words question labels used by the renderers. These labels are

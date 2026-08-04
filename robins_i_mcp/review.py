@@ -1,3 +1,5 @@
+# Copyright 2026 Black Swan Causal Labs
+# SPDX-License-Identifier: Apache-2.0
 """The assessment record, and what you can build from a pile of them.
 
 ROBINS-I assesses ONE result at a time, and each assessment costs a session:

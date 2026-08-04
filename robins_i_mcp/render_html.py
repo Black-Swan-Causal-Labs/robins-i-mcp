@@ -1,3 +1,5 @@
+# Copyright 2026 Black Swan Causal Labs
+# SPDX-License-Identifier: Apache-2.0
 """HTML writer for a completed ROBINS-I assessment.
 
 Self-contained single-file HTML — all CSS inline, no external assets — in the

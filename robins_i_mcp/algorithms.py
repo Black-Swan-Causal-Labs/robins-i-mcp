@@ -1,3 +1,5 @@
+# Copyright 2026 Black Swan Causal Labs
+# SPDX-License-Identifier: Apache-2.0
 """ROBINS-I V2 (follow-up/cohort) risk-of-bias algorithms.
 
 Transcribed from the flowchart figures in the 20 November 2025 cribsheet:

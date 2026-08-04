@@ -1,3 +1,5 @@
+# Copyright 2026 Black Swan Causal Labs
+# SPDX-License-Identifier: Apache-2.0
 """Ingestion: document -> SectionMap with character-offset spans.
 
 Ported from the TARGET server's ingestion layer, which is guideline-agnostic.

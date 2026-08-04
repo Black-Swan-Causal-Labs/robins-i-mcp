@@ -1,3 +1,5 @@
+# Copyright 2026 Black Swan Causal Labs
+# SPDX-License-Identifier: Apache-2.0
 """Per-domain assessment scaffolds.
 
 The model's whole contribution to a ROBINS-I assessment is answering signalling

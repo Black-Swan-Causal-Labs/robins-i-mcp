@@ -1,3 +1,5 @@
+# Copyright 2026 Black Swan Causal Labs
+# SPDX-License-Identifier: Apache-2.0
 """Assembly of a finalized ROBINS-I assessment, ready for rendering.
 
 Nothing here scores anything. It takes answers that were already produced, runs

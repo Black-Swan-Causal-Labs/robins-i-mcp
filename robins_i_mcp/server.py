@@ -1,3 +1,5 @@
+# Copyright 2026 Black Swan Causal Labs
+# SPDX-License-Identifier: Apache-2.0
 """MCP composition layer: the ROBINS-I V2 tool surface.
 
 Nine tools. The unit of assessment is ONE numerical result, not one manuscript,
