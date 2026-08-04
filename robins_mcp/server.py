@@ -8,8 +8,9 @@ and two things must be settled before any domain can be scored:
     specify_result                      A1/A3 + C4 — C4 selects domain 1's variant
     assess_result(domain=N)             per-domain scaffold
     submit_answers(domain=N, ...)       answers -> computed domain judgement
-    submit_answers(domain=0)            finalize; returns the stamped report
+    submit_answers(domain=0)            finalize; stamped report + portable record
     render_report                       re-render the same stamped artifact
+    export_robvis                       many runs' records -> one robvis CSV
 
 The model's contribution is bounded at answering signalling questions. It cannot
 compute a judgement — `algorithms.py` does, from an edge graph traced off the
@@ -31,7 +32,6 @@ from mcp.server.fastmcp import FastMCP
 
 from . import algorithms as alg
 from . import render_html as _render_html
-from . import render_review as _render_review
 from . import retrieve as _retrieve
 from . import review as _review
 from . import scaffold as _scaffold
@@ -91,7 +91,12 @@ mcp = FastMCP(
         "C1-C4 and the analysis detail domains 1 and 4 turn on routinely live only "
         "in the appendix, so pass it to parse_document when you have it. "
         "get_spec introspects the encoded specification and is OPTIONAL — "
-        "assess_result already carries the rubric for the domain in hand."
+        "assess_result already carries the rubric for the domain in hand. "
+        "ACROSS RUNS: a review of many studies is many separate runs, and this "
+        "server keeps NO state between them. submit_answers(domain=0) returns a "
+        "small portable `record` alongside the report — save it. export_robvis "
+        "takes any number of those records, from any number of sessions, and "
+        "combines them into one figure-ready CSV."
     ),
 )
 
@@ -240,20 +245,8 @@ class SubmitResult(TypedDict, total=False):
     provenance: dict | None
     evidence: dict | None
     report: dict | None
+    record: dict | None
     attribution: dict | None
-
-
-class ReviewFigure(TypedDict, total=False):
-    review_id: str
-    n_results: int
-    n_studies: int
-    summary: dict
-    rows: list
-    html: str
-    content_base64: str
-    content_type: str
-    filename: str
-    attribution: dict
 
 
 class RobvisExport(TypedDict, total=False):
@@ -264,6 +257,7 @@ class RobvisExport(TypedDict, total=False):
     rows: list
     n_results: int
     losses: list
+    summary: dict
     slot_mapping: dict | None
     csv: str
     content_base64: str
@@ -561,10 +555,16 @@ def _finalize(result_id: str, *, render: bool, title: str = "") -> dict[str, Any
         "ratification_queue": list(assessment.ratification_queue),
         "provenance": assessment.provenance(),
         "evidence": _evidence_summary(assessment),
+        # The portable summary. SAVE THIS: it is what a later session or agent
+        # needs to build a review-level figure, and it is the only part of this
+        # return that survives the server process.
+        "record": _review.assessment_record(assessment),
         "attribution": _attribution(),
         "next_step": (
             "Present the rendered report as the assessment. It carries the "
-            "provenance stamp; a hand-built table does not. "
+            "provenance stamp; a hand-built table does not. Save the `record` "
+            "too — it is the portable summary a review-level figure is built "
+            "from, and it does not survive this server process otherwise. "
             + (
                 "The ratification queue is NOT empty: this is not a final "
                 "assessment until a human signs off every item in it. Say so "
@@ -1255,86 +1255,34 @@ def render_report(result_id: str, title: str = "") -> Report:
 
 # --- tools: review level ---------------------------------------------------- #
 
-def _assessments_for(review_id: str, result_ids: list[str] | None) -> list[Assessment]:
-    if result_ids:
-        missing = [r for r in result_ids if r not in _assessments]
-        if missing:
-            raise ValueError(
-                f"not finalized this session: {missing}. Finalize each with "
-                "submit_answers(result_id, domain=0) first."
-            )
-        return [_assessments[r] for r in result_ids]
-    picked = [
-        _assessments[rid] for rid in _assessments
-        if not review_id or _results.get(rid, {}).get("review_id") == review_id
-    ]
-    if not picked:
-        known = ", ".join(sorted(_assessments)) or "none this session"
-        raise ValueError(
-            f"No finalized assessments for review {review_id!r}. "
-            f"Finalized this session: {known}."
-        )
-    return picked
-
-
-@mcp.tool()
-def render_review(
-    review_id: str = "",
-    result_ids: list[str] | None = None,
-    labels: dict[str, str] | None = None,
-    title: str = "",
-) -> ReviewFigure:
-    """Render a REVIEW-level traffic-light figure across every result assessed
-    so far: one row per result, the six domains plus overall as columns.
-
-    ROBINS-I assesses one numerical result at a time, so a review is a series of
-    assessments — this is the view across that series. Call it after each result
-    finalizes to watch the evidence base build; it is a pure projection of
-    already-stamped assessments and re-scores nothing.
-
-    Selects by `review_id` (the one used for set_prespecified_confounders), or
-    pass explicit `result_ids`. `labels` maps result_id to a short display label
-    for the rows; without it the row label is the result_id.
-
-    Three things this figure states that a naive traffic-light plot hides: rows
-    are RESULTS, not studies, so they are not independent evidence; the D1
-    column does not mean one thing when the set mixes C4 variants, and each row
-    is badged accordingly; and it keeps 'Low, except for concerns about
-    uncontrolled confounding' as its own level rather than collapsing it to Low.
-    Returns the HTML and the same bytes base64-encoded."""
-    picked = _assessments_for(review_id, result_ids)
-    html = _render_review.render(
-        picked, review_id=review_id, title=title or None, labels=labels or None)
-    summary = _review.review_summary(picked)
-    stem = (review_id or "review").replace("/", "_").replace(" ", "_")[:80]
-    return {
-        "review_id": review_id,
-        "n_results": summary["n_results"],
-        "n_studies": summary["n_studies"],
-        "summary": summary,
-        "rows": _review.review_rows(picked, labels or None),
-        "html": html,
-        "content_base64": base64.b64encode(html.encode("utf-8")).decode("ascii"),
-        "content_type": "text/html; charset=utf-8",
-        "filename": f"{stem}_ROBINS-I_review.html",
-        "attribution": _attribution(),
-    }
-
-
 @mcp.tool()
 def export_robvis(
+    records: list[dict[str, Any]] | None = None,
     review_id: str = "",
     result_ids: list[str] | None = None,
     labels: dict[str, str] | None = None,
     weights: dict[str, float] | None = None,
     layout: str = "robins_i",
 ) -> RobvisExport:
-    """Export finalized assessments as a CSV for **robvis** (McGuinness &
-    Higgins), the standard tool for Cochrane-style risk-of-bias figures.
+    """Combine assessment RECORDS from any number of runs into a CSV for
+    **robvis** (McGuinness & Higgins), the standard tool for Cochrane-style
+    risk-of-bias figures.
 
-    READ THE RETURNED `losses` AND `usage` BEFORE PUBLISHING THE FIGURE. This is
-    not a plain column dump, because robvis's ROBINS-I template is ROBINS-I V1
-    and V2 is not drop-in compatible:
+    A review of 200 studies is 200 separate runs — each assessment costs a
+    session, and nothing in this server survives between them. So pass
+    `records`: the `record` object each submit_answers(domain=0) returns. They
+    are small, flat and JSON-native, so a whole review's worth fits in one
+    context, and they carry their own provenance so every row stays traceable
+    to a document and an algorithm fingerprint. Omit `records` to use only what
+    was assessed in THIS session (convenient, but session-scoped).
+
+    READ THE RETURNED `losses` BEFORE PUBLISHING THE FIGURE. It reports records
+    that are not yet ratified, mixed C4 variants, equal weighting, and records
+    built under differing algorithm transcriptions — each of which would make
+    the figure claim more than the assessments support.
+
+    This is not a column dump, because robvis's ROBINS-I template is ROBINS-I
+    **V1** and V2 is not drop-in compatible:
 
       * V1 has SEVEN domains and orders selection of participants BEFORE
         classification of interventions. V2 has six and swaps that pair. Writing
@@ -1342,21 +1290,41 @@ def export_robvis(
         prints your classification judgement under the heading "Bias due to
         selection of participants". layout='robins_i' (the default) places each
         V2 judgement into its correct V1 SLOT and marks the dropped deviations
-        domain NA, which robvis renders as N/A. Upload it with tool='ROBINS-I'.
+        domain NA. Upload it with tool='ROBINS-I'.
       * layout='generic' writes six columns headed with V2's own domain names,
         for tool='Generic'. The headings are then right, but robvis relabels the
         judgements into ROB1's vocabulary — Moderate becomes "Some concerns",
-        Serious becomes "High". Prefer 'robins_i' unless you need V2 headings.
+        Serious becomes "High". Prefer 'robins_i'.
 
     Neither layout can carry 'Low, except for concerns about uncontrolled
     confounding': robvis reduces every cell to its first initial over a
-    five-fill palette, so it collapses to Low whatever string is written. Use
-    render_review to keep that level, or state it in the figure caption.
+    five-fill palette, so it collapses to Low whatever string is written. Say so
+    in the figure caption."""
+    if records:
+        picked = _review.as_records(records)
+    else:
+        if result_ids:
+            missing = [r for r in result_ids if r not in _assessments]
+            if missing:
+                raise ValueError(
+                    f"not finalized in this session: {missing}. Either finalize them "
+                    "here, or pass their saved `records` instead."
+                )
+            chosen = [_assessments[r] for r in result_ids]
+        else:
+            chosen = [
+                _assessments[rid] for rid in _assessments
+                if not review_id or _results.get(rid, {}).get("review_id") == review_id
+            ]
+        if not chosen:
+            known = ", ".join(sorted(_assessments)) or "none this session"
+            raise ValueError(
+                f"No finalized assessments in this session for review {review_id!r}. "
+                f"Finalized here: {known}. For results assessed in EARLIER sessions, "
+                "pass their saved `records` — this server keeps no state between runs."
+            )
+        picked = _review.as_records(chosen)
 
-    `weights` maps result_id to a meta-analysis weight; omitted means every row
-    weighs 1, and robvis's weighted bar must not then be presented as
-    precision-weighted."""
-    picked = _assessments_for(review_id, result_ids)
     table = _review.robvis_csv(
         picked, layout=layout, labels=labels or None, weights=weights or None)
     stem = (review_id or "review").replace("/", "_").replace(" ", "_")[:80]

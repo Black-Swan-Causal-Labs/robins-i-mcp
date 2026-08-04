@@ -49,15 +49,14 @@ robins-mcp/
 │   ├── report.py          Assessment assembly, evidence binding, provenance
 │   ├── render_html.py     self-contained BSCL-branded HTML report
 │   ├── scaffold.py        per-domain question/cue scaffolds for the model
-│   ├── review.py          review-level rows, summary, robvis export
-│   ├── render_review.py   traffic-light figure across results
-│   └── server.py          the MCP tool surface — 10 tools
+│   ├── review.py          the portable assessment record + robvis export
+│   └── server.py          the MCP tool surface — 9 tools
 ├── examples/
 │   ├── dickerman_2022.py            library-level assessment (NEJM 2022)
 │   ├── jabagi_2026_server_run.py    server-level assessment (Lancet Reg Health Eur 2026)
-│   ├── review_batch.py              review-level: 3 results, figure + robvis export
+│   ├── review_from_records.py       cross-session: save records, aggregate from disk
 │   └── demo_report.py               synthetic, exercises all three flag paths
-├── tests/                 202 passing (137 library + 43 server + 22 review)
+├── tests/                 205 passing (137 library + 43 server + 25 record/export)
 ├── pyproject.toml         installable; entry point `robins-mcp`
 └── docs/                  DECISIONS.md, STATUS.md
 ```
@@ -73,7 +72,7 @@ python3 -m venv .venv && .venv/bin/python -m pip install -e ".[dev]"
 > `mcp` is pinned `>=1.9,<2` — 2.0 replaced `FastMCP` with `MCPServer`. See
 > DECISIONS.md. Not yet registered in any client's MCP config.
 
-## The tool surface (10 tools)
+## The tool surface (9 tools)
 
 | Group | Tool | Notes |
 |---|---|---|
@@ -85,8 +84,7 @@ python3 -m venv .venv && .venv/bin/python -m pip install -e ".[dev]"
 | Assess | `assess_result` | `domain=0` overview, `domain=1..6` scaffold |
 | | `submit_answers` | per domain; `domain=0` finalizes and renders |
 | Render | `render_report` | re-render of the stamped artifact |
-| Review | `render_review` | traffic-light figure across every result in a review |
-| | `export_robvis` | CSV for robvis; read its `losses` before publishing |
+| Review | `export_robvis` | many runs' records -> one robvis CSV; read its `losses` |
 
 Three things are enforced at `submit_answers` and are the point of the layer:
 quotes resolve to offsets in the ingested bundle or are rejected with the nearest
@@ -166,26 +164,37 @@ Outcome: **serious**, on domain 1. All 26 quotes bound on the exact pass. 13 of
 The run also found a real bug — an agent-proposed P1 was not entering the
 ratification queue. Fixed; see DECISIONS.md 2026-08-03.
 
-## Review-level output (added 2026-08-03)
+## Across runs: the record (added 2026-08-03)
 
-A review is a *series* of assessments — one per result, sharing a `review_id`
-and therefore a P1. That already worked; what was missing was any view across
-it. `review.py` and `render_review.py` add one.
+**A review of N studies is N runs.** Each assessment costs a session — the model
+reads one paper and answers signalling questions against it — and this server
+keeps NO state between runs. So the interchange unit is not server memory and
+not an `Assessment` object; it is a **record**: the small, flat, JSON-native
+summary `submit_answers(domain=0)` returns alongside the report.
 
-`render_review` states three things a naive traffic-light plot hides, because
-each of them would otherwise overstate the evidence:
-- **rows are results, not studies** — the figure prints "N rows from M
-  document(s)" so a paper contributing three outcomes cannot read as three
-  studies' worth of independent evidence;
-- **the D1 column does not mean one thing** when a set mixes C4 variants, so
-  every row is badged A or B and a caveat appears only when the set is mixed;
-- **it keeps `low_except_confounding` as its own level**, which robvis cannot.
+```
+session 1..N   assess one result -> save submit_answers(domain=0)['record']
+later          export_robvis(records=[...]) -> one figure-ready CSV
+```
 
-`export_robvis` is the interop path, and it is not a column dump — see
-DECISIONS.md 2026-08-03. It defaults to `layout="robins_i"`, which places V2's
-judgements into V1's seven slots (V1 orders selection before classification;
-V2 swaps them) and marks the dropped deviations domain NA. Always read the
-returned `losses`.
+~4 KB each, so a normal review's worth fits in one context (see DECISIONS.md for
+the limit at 200+). Each record carries its own provenance — text hash,
+algorithm fingerprint, spec version, source status, ratification state — so a
+row in the resulting figure traces back to a document rather than being an
+anonymous coloured square. That also lets the export notice when a set mixes
+algorithm transcriptions and warn that the judgements are not comparable.
+
+`export_robvis` is not a column dump. Its default `layout="robins_i"` places
+each V2 judgement into its correct **V1 slot** — V1 has seven domains and orders
+selection *before* classification, which V2 swaps — and marks the dropped
+deviations domain NA. A positional dump would parse, plot, and lie. Always read
+the returned `losses`: unratified records, mixed C4 variants, equal weighting,
+mixed fingerprints, and the fact that `low_except_confounding` cannot survive
+robvis's five-fill palette.
+
+`examples/review_from_records.py` runs the whole loop: two papers assessed
+independently, records written to disk, then aggregated *from files* with no
+server state involved.
 
 ## NEXT
 

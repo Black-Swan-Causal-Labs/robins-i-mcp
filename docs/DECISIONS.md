@@ -7,6 +7,65 @@ Format: **what** — why — status.
 
 ---
 
+## 2026-08-03 · The unit of interchange between runs is a record, not server state
+`submit_answers(domain=0)` returns a small, flat, JSON-native `record`
+(`review.assessment_record`, versioned by `RECORD_VERSION`). `export_robvis`
+takes any number of those, from any number of sessions.
+
+- **The problem this fixes, which the first version had:** a review of 200
+  studies is 200 runs. Each assessment costs a session — the model must read a
+  paper and answer signalling questions against it — and this server keeps no
+  state between runs. The first `export_robvis` read `_assessments` from the
+  running process, so it could only ever export what one session had done. It
+  aggregated without anything to aggregate.
+- **Why a record rather than passing `Assessment` objects around:** the
+  interchange format should not be this server's internals. A record is ~4 KB,
+  flat, and depends on nothing in this codebase, so a different agent — or a
+  script, or a person — can consume it. It is also the natural deliverable of a
+  run alongside the HTML: the HTML is for a human, the record is for whatever
+  comes next.
+- **What a record must carry, and why each part earns its place:** the
+  judgements (what a figure plots); citation/outcome/result (what labels a row);
+  the C4 variant (domain 1 means something different under each); override and
+  ratification state (an unratified assessment is not final and a figure must
+  not imply otherwise); and the full provenance stamp. Without the stamp a row
+  in a summary figure is an anonymous coloured square — with it, the row traces
+  back to a document hash and an algorithm fingerprint.
+- **A consequence worth having:** because records carry fingerprints,
+  `robvis_table` can notice when a set mixes algorithm transcriptions and say
+  the judgements are not strictly comparable. Server-state aggregation could
+  never have detected that.
+- `RECORD_VERSION` is a compatibility surface; consumers check it rather than
+  assuming shape, and a record from a future version is refused rather than
+  half-read.
+- **Known limit, not solved:** ~4 KB per record means ~800 KB for 200 studies,
+  which is too much for a single context. Typical ROBINS-I reviews run 10-40, so
+  this is not pressing; at real scale, aggregate in batches or strip the
+  review-level fields (`prespecified_confounders`, `information_sources`) that
+  repeat identically across every record.
+- Status: built. 24 tests, of which `test_records_survive_a_round_trip_through_json`
+  is the one the whole design rests on.
+
+## 2026-08-03 · No parallel review figure; robvis is the figure
+`render_review.py` was built and then removed the same day.
+
+- **Why it was built:** to keep `low_except_confounding` as a sixth level, which
+  robvis cannot represent.
+- **Why it was removed:** it duplicated a mature, citable tool that reviewers
+  already recognise, to preserve a distinction that a figure caption carries
+  perfectly well. Its first demo — three results from one paper — also produced
+  three identical rows, which is what finally exposed the shape as wrong: within
+  one study, domains 2, 3 and 4 are properties of the cohort and cannot vary by
+  outcome, and only D5 and sometimes D6 move at all. The figure needed a caveat
+  box explaining why its own rows were not what its format implied, and needing
+  to explain away your own output is a design smell.
+- **What survives, and is the actually novel part:** the V1-slot mapping in
+  `export_robvis`. robvis gets that silently wrong and cannot fix it for itself.
+- The cross-STUDY case remains real — one row per study, shared P1, which is
+  ROBINS-I's own planning-stage design — and is served by the export.
+- Reversible: `git revert` restores the figure if a review ever needs the sixth
+  level plotted rather than captioned.
+
 ## 2026-08-03 · robvis export must use tool="Generic", never tool="ROBINS-I"
 Not yet built, but the finding is load-bearing enough to record before it is.
 
