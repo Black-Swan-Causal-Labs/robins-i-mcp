@@ -33,8 +33,9 @@ are complementary on the same paper.
 >    the source never raises it.
 
 Built by Black Swan Causal Labs. See `docs/DECISIONS.md` for why things are the
-way they are, and `TRANSCRIPTION-NOTES.md` for how the algorithms were obtained
-and what still needs external verification.
+way they are, `docs/SESSION-NOTES-*.md` for the narrative (2026-08-03 builds the
+server, 2026-08-04 publishes it), and `TRANSCRIPTION-NOTES.md` for how the
+algorithms were obtained and what still needs external verification.
 
 ## State: **server built and running**; verified on two real papers
 
@@ -231,6 +232,12 @@ server state involved.
 
 ## NEXT
 
+- **Announce it.** A page on the BSCL website and a LinkedIn post — the agreed
+  next piece of work. Carry the framing the rest of this repo is careful about:
+  the instrument is a **draft**, the algorithms are hand-traced from raster
+  flowcharts and externally unverified, and no assessment is final until a human
+  ratifies. An announcement that drops those qualifications undoes what makes
+  the tool defensible. The website repo is `../../Black Swan Causal Lab website`.
 - **Drive it over stdio from a real client.** Published and installable, but
   every exercise so far has been in-process or through `mcp.call_tool` — that
   validates the output schemas, which is not the same as a real client session.

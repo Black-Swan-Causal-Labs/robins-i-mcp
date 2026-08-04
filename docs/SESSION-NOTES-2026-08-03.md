@@ -144,3 +144,7 @@ the only independent check on the raster tracing that does not need the
 development group's cooperation.
 
 Still no git repo here. That is now overdue.
+
+**Continued in `SESSION-NOTES-2026-08-04.md`** — the repo was initialised,
+renamed to `robins-i-mcp`, and published to GitHub, PyPI and the MCP registry
+the same night.

@@ -7,6 +7,27 @@ Format: **what** — why — status.
 
 ---
 
+## 2026-08-04 · LICENSE stays verbatim; copyright lives in NOTICE and SPDX headers
+Prompted by a good question: LICENSE contains
+`Copyright [yyyy] [name of copyright owner]` — should that carry BSCL's details?
+
+- **No.** That line sits under the appendix "How to apply the Apache License to
+  your work". It is a template showing how to apply the licence, not a blank to
+  fill. The canonical text stays verbatim; editing it means distributing
+  something that is not quite Apache-2.0, which is the ambiguity a standard
+  licence exists to remove.
+- **Where the assertion actually belongs:** NOTICE (`Copyright 2026 Black Swan
+  Causal Labs`), which is Apache-2.0's own attribution vehicle at §4(d), and
+  which ships in the wheel via `license-files = ["LICENSE", "NOTICE"]`. Holder
+  confirmed as the lab, not the individual.
+- **Why SPDX headers on the modules, given NOTICE already covers it:** not
+  convention. `algorithms.py` is the file most likely to be copied out on its
+  own, being the only machine-readable transcription of flowcharts that exist
+  elsewhere purely as raster images. Separated from the repository it would
+  carry no owner, no licence, and no signal that it was hand-traced from a
+  DRAFT and is externally unverified. Two lines keep all of that attached.
+- Status: done. Ten modules; tests and examples deliberately left alone.
+
 ## 2026-08-04 · Named for the instrument, not the family: robins-i-mcp
 Published as `robins-i-mcp` / `com.blackswancausallabs/robins-i-mcp`, after
 briefly being `robins-mcp`.
