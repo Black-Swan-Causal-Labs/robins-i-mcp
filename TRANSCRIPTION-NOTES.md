@@ -167,13 +167,39 @@ intervention" domain and folded protocol deviations into Domain 1 Variant B via
 g-methods. None of that survives the move to a design with no follow-up
 structure — cross-sectional, conventional case-control, before-and-after.
 
-**Unresolved, and the source does not address it:** designs *sampled from within*
-a follow-up study — nested case-control, case-cohort. The sampling is an
-efficiency device and the estimand is the underlying cohort's, so the domains
-mostly map; but domain 3 (selection into the analysis) and domain 4 would need
-care, and the algorithms assume the follow-up questions are answerable as
-written. Worth putting to the development group alongside the algorithm
-cross-check.
+**That last sentence is inference, not encoding.** The source names no eligible
+or ineligible design anywhere: "case-control", "cross-sectional" and
+"before-after" each occur zero times in 49 pages. It states a criterion and
+leaves the application to the assessor. The inference is easy in those three
+cases and hard in one — see "Questions for the development group" below. Keep
+the distinction: the criterion is theirs, the design labels are ours, and only
+the criterion is in the encoded spec.
+
+## Questions for the development group
+
+**These are OURS. None of them is raised by the source document, and none of
+them appears in the encoded spec** — the spec records what the tool states, not
+what we wonder about it. Kept here so the distinction survives.
+
+1. **Designs sampled from within a follow-up study** — nested case-control,
+   case-cohort. Verified absent from the source: across 49 pages, "nested",
+   "case-cohort", "case-control", "subcohort", "risk set", "density sampling"
+   and "two-phase" occur **zero** times, and the only two hits for `sampl*` are
+   both "sampling variation" in the target-trial definition. So the tool neither
+   includes nor excludes these designs; it never contemplates them.
+   The question is live because the sampling is an efficiency device over a
+   follow-up study and the estimand is the underlying cohort's, so most domains
+   appear to map — but domain 3 (selection into the study *or into the
+   analysis*) and domain 4 would need care, and the algorithms assume the
+   follow-up questions are answerable as written. Until answered: out of scope
+   for this implementation, and an assessor who applies it anyway should record
+   that as a deviation.
+2. **The three errata** in "Errors in the source document" above.
+3. **Domain 6's overlapping bands on all-NI** — see "Judgement calls made during
+   tracing". The one genuine ambiguity in the transcription.
+4. **An algorithm cross-check** against their own implementation when it ships.
+5. **Whether a non-follow-up variant is planned**, and on what timeline — it
+   would need its own spec and its own algorithms, not an extension of this one.
 
 ## What is not yet built
 

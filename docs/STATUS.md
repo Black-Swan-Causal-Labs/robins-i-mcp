@@ -25,11 +25,12 @@ are complementary on the same paper.
 >    emulations are the central use case and are cohort studies in exactly this
 >    sense — both worked examples are TTEs. Out of scope: designs with no
 >    follow-up structure (cross-sectional, conventional case-control,
->    before-after). **Open:** designs *sampled from* a cohort (nested
->    case-control, case-cohort) — the source is silent; treat as a documented
->    judgement call. No variant for other designs is *published*; separate tools
+>    before-after). No variant for other designs is *published*; separate tools
 >    are reported to be in development. Beware "variant" in the source: it means
->    Domain 1's two forms, never a study design.
+>    Domain 1's two forms, never a study design. Our own open scope question
+>    (designs sampled from within a cohort) is NOT in the spec — it lives in
+>    TRANSCRIPTION-NOTES.md under "Questions for the development group", because
+>    the source never raises it.
 
 Built by Black Swan Causal Labs. See `docs/DECISIONS.md` for why things are the
 way they are, and `TRANSCRIPTION-NOTES.md` for how the algorithms were obtained
@@ -171,6 +172,16 @@ ratification queue. Fixed; see DECISIONS.md 2026-08-03.
 - **`render_report_docx`** — deliberately not built. The target-mcp docx renderer
   is shaped around a checklist table and does not transfer to a
   domain/judgement/support document; this needs its own renderer, not a port.
+- **robvis export** — small, high value, and the natural first piece of
+  review-level output. [robvis](https://mcguinlu.shinyapps.io/robvis/) is how
+  these assessments become Cochrane-style traffic-light and summary figures.
+  One function: a row per assessed result, a column per domain, plus Overall and
+  Weight. **It must target `tool = "Generic"`, never `tool = "ROBINS-I"`** —
+  that template is V1, which has seven domains AND transposes D2/D3 relative to
+  V2, so a positional dump silently mislabels two domains without erroring. See
+  DECISIONS.md 2026-08-03 for the full mapping and for the one thing to ask
+  about before building: how to render `low_except_confounding` in a palette
+  that has no slot for it.
 - **Corpus tools** (`aggregate_corpus`, `build_coding_sheet`,
   `validate_against_gold`) — also deliberately not built. They are written
   against TARGET's leaf/verdict data model, not a domain/judgement one, so these

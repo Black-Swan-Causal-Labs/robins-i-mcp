@@ -7,6 +7,45 @@ Format: **what** — why — status.
 
 ---
 
+## 2026-08-03 · robvis export must use tool="Generic", never tool="ROBINS-I"
+Not yet built, but the finding is load-bearing enough to record before it is.
+
+[robvis](https://mcguinlu.shinyapps.io/robvis/) (McGuinness & Higgins) is how
+risk-of-bias assessments become Cochrane-style traffic-light and summary figures,
+so it is the natural downstream target for this server's output. Its ROBINS-I
+template is **V1** and V2 is NOT drop-in compatible. Read from robvis source
+(`R/rob_summary.R`, `R/rob_traffic_light.R`):
+
+| robvis `tool="ROBINS-I"` (V1) | ROBINS-I V2 |
+|---|---|
+| D1 confounding | D1 confounding |
+| D2 **selection of participants** | D2 **classification of interventions** |
+| D3 **classification of interventions** | D3 **selection of participants** |
+| D4 deviations from intended interventions | — dropped, folded into D1 variant B |
+| D5 missing data | D4 missing data |
+| D6 measurement of outcomes | D5 measurement of the outcome |
+| D7 selection of the reported result | D6 selection of the reported result |
+
+- **The dangerous part is not the dropped domain, it is the transposition.** V2
+  swapped D2 and D3 relative to V1. A positional dump into the ROBINS-I template
+  loses no data and raises no error — it just prints the classification
+  judgement under the heading "Bias due to selection of participants". On the
+  Jabagi assessment that silently swaps Low and Moderate. A figure that is wrong
+  and confident is worse than no figure.
+- **Judgement vocabulary does not fit either.** robvis takes l/m/s/c/n/x. There
+  is no slot for `low_except_confounding`, and mapping it to `l` erases the one
+  thing V2 insists on about domain 1 — that it can never reach plain low. And
+  robvis's `n` ("No information") is a V1 domain-level verdict; in V2, NI is a
+  signalling-question answer and no domain judgement can be NI.
+- **Therefore:** any export targets `tool = "Generic"`, which takes arbitrary
+  domain columns, uses the header row as labels, and accepts custom
+  `judgement_labels`. Never emit a file claiming to be a ROBINS-I robvis dataset.
+- **Open question for the export, not to be silently decided:** how to render
+  `low_except_confounding` in a five-colour palette. Options are a sixth colour
+  (honest, non-standard), collapse to low with a footnote (standard, lossy), or
+  refuse to plot domain 1 alongside the others. Ask before choosing.
+- Status: recorded, not built. See STATUS.md NEXT.
+
 ## 2026-08-03 · Scope is follow-up cohort studies; read the property, not the label
 `guideline_scope` states the structural property and names the one case where
 the wording genuinely bites. Settled after two wrong turns in one conversation,

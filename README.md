@@ -18,10 +18,9 @@ complementary on the same paper.
 > contrasted strategies — so read the property, not a design label. Target trial
 > emulations are the central use case and are cohort studies in exactly this
 > sense; both worked examples below are TTEs. Designs with no follow-up
-> structure are out; designs *sampled from* a cohort (nested case-control,
-> case-cohort) are an open question the source does not address. No variant for
-> other designs is published yet. Note that "Variant A / Variant B" inside the
-> tool means the two forms of Domain 1 selected by C4 — not a study design.
+> structure are out. No variant for other designs is published yet. Note that
+> "Variant A / Variant B" inside the tool means the two forms of Domain 1
+> selected by C4 — not a study design.
 
 ## What makes it different from asking a model
 
