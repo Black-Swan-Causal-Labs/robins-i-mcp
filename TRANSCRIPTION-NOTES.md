@@ -11,10 +11,14 @@ for follow-up (cohort) studies, 20 November 2025, 49 pp.
 > tables, not their PDF. Re-check riskofbias.info before relying on an
 > assessment, and see "Diffing the two releases" below.
 >
-> **Only one design variant exists.** ROBINS-I V2 is published solely as the
-> follow-up (cohort) tool — there is no case-control or cross-sectional version.
-> Beware the word "variant": inside the tool it means the two forms of Domain 1
-> selected by C4, not a study design.
+> **Scope is FOLLOW-UP studies — do not read it as "cohort studies".** The
+> document titles itself the tool for follow-up studies; "(cohort)" is a one-off
+> parenthetical gloss, and "cohort study" occurs exactly once in 49 pages, in a
+> time-varying-confounding example. No list of eligible designs is given
+> anywhere. Reading the scope narrowly would exclude target trial emulations,
+> which are the central use case. No variant for other designs is *published*;
+> separate tools are reported to be in development. Beware "variant": inside the
+> tool it means Domain 1's two forms, never a study design.
 
 Two artefacts were produced from it:
 
@@ -143,16 +147,32 @@ questions worth asking.
 
 ## Scope
 
-This covers the **follow-up (cohort) studies** variant only, which as of
-2026-08-03 is the only variant published — there is no case-control or
-cross-sectional ROBINS-I V2. If one appears it gets its own spec file and its
-own `spec_version`; do not stretch this one.
+This covers the **follow-up studies** variant, which as of 2026-08-03 is the only
+one published. If a variant for other designs appears it gets its own spec file
+and its own `spec_version`; do not stretch this one.
 
-The V2 architecture is specific to follow-up designs rather than incidentally
-aimed at them: it presumes a time zero, follow-up time, and the possibility of
+The criterion is **structural, not a design label**: individuals observed forward
+from a defined start of follow-up under one of the contrasted strategies. Read
+that way it is considerably broader than "cohort study" — target trial
+emulations on routinely collected data, new-user active-comparator designs,
+registry-based and pragmatic non-randomized comparisons all satisfy it. Both
+worked examples in `examples/` are target trial emulations, not textbook cohort
+studies.
+
+The architecture is specific to follow-up designs rather than incidentally aimed
+at them: it presumes a time zero, follow-up time, and the possibility of
 time-varying confounding, having dropped V1's "deviations from intended
 intervention" domain and folded protocol deviations into Domain 1 Variant B via
-g-methods. None of that survives the move to a design without follow-up.
+g-methods. None of that survives the move to a design with no follow-up
+structure — cross-sectional, conventional case-control, before-and-after.
+
+**Unresolved, and the source does not address it:** designs *sampled from within*
+a follow-up study — nested case-control, case-cohort. The sampling is an
+efficiency device and the estimand is the underlying cohort's, so the domains
+mostly map; but domain 3 (selection into the analysis) and domain 4 would need
+care, and the algorithms assume the follow-up questions are answerable as
+written. Worth putting to the development group alongside the algorithm
+cross-check.
 
 ## What is not yet built
 

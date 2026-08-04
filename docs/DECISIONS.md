@@ -7,6 +7,36 @@ Format: **what** — why — status.
 
 ---
 
+## 2026-08-03 · Scope is "follow-up", not "cohort" — correcting an error made earlier the same day
+`guideline_scope` now states a structural criterion rather than a design label,
+and `variant_scope_note` warns against the narrow reading explicitly.
+- **The error:** the source's outline glosses its scope as "follow-up (cohort)
+  studies", and earlier entries in this repo let the parenthetical become the
+  scope, describing the tool as being for cohort studies. That is narrower than
+  the source. The title says follow-up studies; the phrase "cohort study" occurs
+  exactly once in 49 pages, in a time-varying-confounding example; and no list of
+  eligible designs appears anywhere in the document.
+- **Why it mattered practically, not just terminologically:** the narrow reading
+  would exclude target trial emulations, which are the central use case and are
+  what BOTH worked examples in `examples/` actually are. Neither Dickerman nor
+  Jabagi is a textbook cohort study.
+- **The criterion that does apply** is structural: individuals observed forward
+  from a defined start of follow-up under the contrasted strategies. Satisfied by
+  TTEs, new-user active-comparator designs, registry and pragmatic comparisons;
+  not satisfied by cross-sectional, conventional case-control, or before-after.
+- **Left open deliberately:** nested case-control and case-cohort, where sampling
+  is an efficiency device inside a follow-up study. The source is silent. Recorded
+  as a judgement call to make and document, not resolved by fiat.
+- **Second correction, same entry:** the claim that no other design variant
+  "exists" was asserted from a single page fetch summarised by a small model —
+  thin evidence for a negative. The supportable statement is that none is
+  *published*, with separate tools reported to be in development.
+- **Method note worth keeping:** the primary source settled this and the
+  secondary summary did not. Grepping the PDF for design vocabulary — one hit for
+  "cohort study", zero for "case-control" — was more informative than any
+  description of the tool.
+- Status: corrected across spec, STATUS, TRANSCRIPTION-NOTES and README.
+
 ## 2026-08-03 · The source is a draft, and every report says so
 `report.SOURCE_STATUS` is stamped into `provenance()` and the rendered
 provenance line; `spec.source_status: draft` carries the same fact into

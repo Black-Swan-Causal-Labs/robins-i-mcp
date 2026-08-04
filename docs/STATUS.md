@@ -18,10 +18,18 @@ are complementary on the same paper.
 >    `source draft (20 Nov 2025 release, subject to change)` in its provenance
 >    line. The algorithm fingerprint does NOT cover this — it hashes our
 >    transcription, so an upstream revision is invisible to it.
-> 2. **There is only one design variant.** ROBINS-I V2 is published solely as the
->    follow-up (cohort) tool; no case-control or cross-sectional version exists.
->    "Variant A/B" inside the tool means the two forms of Domain 1 selected by
->    C4, not a study design — do not confuse the two when reading the source.
+> 2. **The scope is FOLLOW-UP studies, not "cohort studies".** This is easy to get
+>    wrong, and an earlier version of this file did. The source titles itself the
+>    tool for follow-up studies; "(cohort)" is a one-off parenthetical, and the
+>    phrase "cohort study" appears exactly once in 49 pages — in a time-varying
+>    confounding example, not a scope statement. The criterion is structural
+>    (observed forward from a defined time zero under the contrasted strategies),
+>    so it covers target trial emulations, new-user designs and registry
+>    comparisons — much more than the label "cohort study" suggests. It does not
+>    cover designs with no follow-up structure. Nested case-control and
+>    case-cohort are arguable and unaddressed by the source. No variant for other
+>    designs is *published*; separate tools are reported to be in development.
+>    Beware "variant" in the source: it means Domain 1's two forms, never a design.
 
 Built by Black Swan Causal Labs. See `docs/DECISIONS.md` for why things are the
 way they are, and `TRANSCRIPTION-NOTES.md` for how the algorithms were obtained

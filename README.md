@@ -13,9 +13,13 @@ complementary on the same paper.
 > release of ROBINS-I V2 as still a draft, subject to change. Every report
 > stamps that in its provenance line. See `NOTICE` and `TRANSCRIPTION-NOTES.md`.
 >
-> **Cohort studies only.** ROBINS-I V2 is published solely as the follow-up
-> (cohort) tool. Note that "Variant A / Variant B" inside the tool means the two
-> forms of Domain 1 selected by C4 — not a study design.
+> **Follow-up studies — which is broader than "cohort studies".** The criterion
+> is structural: individuals observed forward from a defined time zero under the
+> contrasted strategies. Target trial emulations, new-user active-comparator
+> designs and registry comparisons all qualify; both worked examples below are
+> TTEs. Designs with no follow-up structure do not. No variant for other designs
+> is published yet. Note that "Variant A / Variant B" inside the tool means the
+> two forms of Domain 1 selected by C4 — not a study design.
 
 ## What makes it different from asking a model
 

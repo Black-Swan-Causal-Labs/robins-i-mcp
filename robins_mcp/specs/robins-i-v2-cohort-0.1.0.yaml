@@ -45,22 +45,44 @@ source_status_note: >
   Re-check riskofbias.info for a newer release before relying on any assessment.
 
 variant_scope_note: >
-  ROBINS-I V2 is published only in this form. There is no case-control,
-  cross-sectional or other design variant of the tool: riskofbias.info lists
-  the Nov 2025 draft and the archived Nov 2024 release, both the follow-up
-  (cohort) document. Note that "Variant A / Variant B" inside the tool refers
-  to the two forms of DOMAIN 1 selected by C4, not to study designs. The V2
-  architecture presumes a time zero, follow-up time and possible time-varying
-  confounding — it dropped V1's "deviations from intended intervention" domain
-  and folded protocol deviations into domain 1 variant B — so it does not
-  transfer to designs without follow-up.
+  READ "follow_up" AS THE OPERATIVE TERM, NOT "cohort". The source titles itself
+  the tool for follow-up studies; "(cohort)" appears once, as a parenthetical
+  gloss, and the phrase "cohort study" appears exactly once in 49 pages — in an
+  example about time-varying confounding, not a scope statement. The document
+  never enumerates eligible designs. Reading the scope as "cohort studies" is
+  narrower than the source and would wrongly exclude target trial emulations,
+  which are the central use case. See guideline_scope above for the structural
+  criterion that actually applies.
+
+  As of 2026-08-03 no variant for other designs is PUBLISHED — riskofbias.info
+  lists the Nov 2025 draft and the archived Nov 2024 release, both the same
+  follow-up document — and separate tools for other designs are reported to be
+  under development. That is a claim about what has shipped, not about what is
+  planned; re-check before relying on it.
+
+  Beware the word "variant" when reading the source: inside the tool it means
+  the two forms of DOMAIN 1 selected by C4, never a study design.
 
 guideline_scope: >
-  Cohort-style non-randomized studies in which one treatment policy is
-  contrasted against another and participants are sorted into groups on the
-  basis of what they were prescribed or took, since nothing was allocated at
-  random. Other ROBINS-I variants (e.g. for other study designs) are outside
-  the encoded scope; do not apply this spec to them.
+  Non-randomized studies with a FOLLOW-UP structure: individuals are observed
+  forward from a defined start of follow-up under one of the treatment policies
+  being contrasted, and are sorted into those groups by what they were
+  prescribed or took, since nothing was allocated at random.
+
+  The criterion is structural, not a design label. It is satisfied by far more
+  than what is conventionally filed under "cohort study" — target trial
+  emulations on routinely collected data, new-user active-comparator designs,
+  registry-based comparisons and pragmatic non-randomized comparisons all
+  qualify. It is NOT satisfied by designs without a follow-up structure
+  (cross-sectional, conventional case-control, before-and-after), because the
+  architecture presumes a time zero and the possibility of time-varying
+  confounding.
+
+  Genuinely arguable and not addressed by the source: designs sampled from
+  within a follow-up study, such as nested case-control and case-cohort, where
+  the sampling is an efficiency device and the estimand is the underlying
+  cohort's. Treat as a judgement call and record it, rather than assuming
+  either way.
 
 # ---------------------------------------------------------------------------
 # What makes this instrument structurally different from a reporting checklist

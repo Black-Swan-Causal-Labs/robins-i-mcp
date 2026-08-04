@@ -105,11 +105,27 @@ stamps the draft status onto every report's provenance line, and
 carrying `robins-i-v2-cohort-0.1.0` stay comparable. Bump it when the content
 moves.
 
-On the original question: no case-control or cross-sectional variant exists, and
-the V2 architecture is specific to follow-up designs rather than incidentally
-aimed at them — it presumes a time zero and time-varying confounding, having
-folded protocol deviations into Domain 1 Variant B. Worth knowing that "Variant"
-in the source means Domain 1's two forms, not a study design.
+On the original question I got it wrong first time and was corrected. I answered
+"cohort only", following the source's parenthetical gloss "follow-up (cohort)
+studies". The operative term is **follow-up**; "(cohort)" appears once, and the
+phrase "cohort study" appears exactly once in 49 pages, in a time-varying
+confounding example. The document never enumerates eligible designs.
+
+The narrow reading is not a terminological quibble — it would exclude target
+trial emulations, which are the central use case and which is what *both* worked
+examples in this repo are. Neither Dickerman nor Jabagi is a textbook cohort
+study. The criterion is structural: observed forward from a defined time zero
+under the contrasted strategies. Nested case-control and case-cohort sit in a
+genuinely unresolved middle that the source does not address.
+
+I had also asserted that no other design variant exists, on one page fetch
+summarised by a small model. Too strong for a negative claim; the supportable
+version is that none is *published*, with separate tools reported to be in
+development.
+
+Two method lessons, both cheap: the primary source settled this and the secondary
+summary did not — grepping the PDF for design vocabulary was worth more than any
+description of the tool. And a single fetch is not evidence for a negative.
 
 ## Where to pick up
 
