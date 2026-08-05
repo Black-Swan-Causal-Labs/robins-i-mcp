@@ -1,6 +1,6 @@
 # Status & handoff
 
-Snapshot for picking the project back up cold. Last updated 2026-08-03.
+Snapshot for picking the project back up cold. Last updated 2026-08-05.
 
 ## What this is
 
@@ -34,7 +34,7 @@ are complementary on the same paper.
 
 Built by Black Swan Causal Labs. See `docs/DECISIONS.md` for why things are the
 way they are, `docs/SESSION-NOTES-*.md` for the narrative (2026-08-03 builds the
-server, 2026-08-04 publishes it), and `TRANSCRIPTION-NOTES.md` for how the
+server, 2026-08-04 publishes and announces it), and `TRANSCRIPTION-NOTES.md` for how the
 algorithms were obtained and what still needs external verification.
 
 ## State: **server built and running**; verified on two real papers
@@ -238,12 +238,22 @@ server state involved.
 
 ## NEXT
 
-- **Announce it.** A page on the BSCL website and a LinkedIn post — the agreed
-  next piece of work. Carry the framing the rest of this repo is careful about:
-  the instrument is a **draft**, the algorithms are hand-traced from raster
-  flowcharts and externally unverified, and no assessment is final until a human
-  ratifies. An announcement that drops those qualifications undoes what makes
-  the tool defensible. The website repo is `../../Black Swan Causal Lab website`.
+- **Fix two defects in the Jabagi 3.3 rationale.** Neither changes an answer, so
+  the judgement and the stamp stand, but the rationale is what a reader checks.
+  (a) Live-birth conditioning is never named: the cohort is restricted to live
+  births, a post-exposure event, which is collider selection and belongs
+  alongside the nirsevimab and 14-day exclusions. (b) The rationale says the
+  exclusions rest on "information that only exists after time zero" — true for
+  nirsevimab, wrong for the 14-day rule, which turns on the vaccination-to-
+  delivery interval, post-exposure but realised AT time zero. Found by a question
+  about whether this was immortal time bias. It is not: exposure is fixed before
+  time zero and 3.1 = Y stands.
+- **Finish the announcement.** The website page is live and wired in. The
+  LinkedIn posts are drafted but NOT published: a Black Swan announcement and a
+  personal reshare carrying the Jabagi use case. A two-panel agent/algorithm
+  graphic for the announcement was offered and never built. Any public copy has
+  to carry the constraints in DECISIONS.md 2026-08-04 ("How the project is
+  presented publicly").
 - **Drive it over stdio from a real client.** Published and installable, but
   every exercise so far has been in-process or through `mcp.call_tool` — that
   validates the output schemas, which is not the same as a real client session.

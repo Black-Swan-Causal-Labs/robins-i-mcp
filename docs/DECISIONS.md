@@ -7,6 +7,36 @@ Format: **what** — why — status.
 
 ---
 
+## 2026-08-04 · How the project is presented publicly
+Settled while building the website page and the announcement posts. Recorded
+here because these are constraints on future copy, not one-off wording choices.
+
+- **Public-facing imagery uses the SYNTHETIC example, never the real one.** The
+  Jabagi assessment is the more compelling artifact and it is public in this
+  repository, where it belongs: a methods repository is the right place to grade
+  a named paper, with the reasoning and the ratification queue attached. A
+  marketing page is not. The website hero and card use `demo_report.py` output,
+  labelled "synthetic data, not a real publication".
+- **Never claim the server "automates" ROBINS-I.** It makes the instrument
+  executable and it assists the reading; the judgement was always computable
+  because ROBINS-I publishes the algorithm, and a human still ratifies. Saying
+  "automates" contradicts the epi-in-the-loop design, and invites an argument
+  about whether risk-of-bias assessment can be automated that this project does
+  not hold a position on. Caught in a draft LinkedIn post where "automates this
+  tool" sat four paragraphs above "the epi in the loop needs to weigh in".
+- **"By hand" is a fair claim, stated precisely.** Nothing automates ROBINS-I
+  assessment. Automation exists for randomized trial tools only. What exists for
+  ROBINS-I is review-management software that captures judgements in a form. The
+  safe phrasing is that the manual part is one result at a time, by someone
+  reading the paper.
+- **The draft/unverified caveat travels with any public claim**, and most of all
+  with one that names a paper. A post that grades someone's work while omitting
+  that the algorithms are hand-traced and the confounder list unratified reads as
+  a verdict rather than as an assessment.
+- **"Agent", not "model"**, in anything user-facing. The thing that reads, cites
+  and calls tools is the agent; the model is what is inside it. The website
+  diagram already said "LLM agent" while the prose said "model".
+
 ## 2026-08-04 · No implementation exists to check against, and robvis is unsupported
 Two facts about the surrounding ecosystem, verified against riskofbias.info on
 2026-08-04, both of which change other entries here.
