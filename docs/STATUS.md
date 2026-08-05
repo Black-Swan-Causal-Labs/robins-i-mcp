@@ -279,9 +279,6 @@ server state involved.
   (measured variables, controlled Y/N, measured validly, control demonstrably
   unnecessary, expected direction). The server currently carries P1 as a list of
   strings only. This is the largest remaining gap against the published tool.
-- **Version control.** This directory is still not a git repo. Now that the
-  server exists and two assessments depend on the algorithm fingerprint, that is
-  overdue.
 - **Diff the Nov 2024 release against Nov 2025.** riskofbias.info archives the
   earlier one. Cheapest unexploited check we have: it shows which parts of the
   tool are still moving, and gives a second rendering of the same raster
